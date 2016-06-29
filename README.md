@@ -18,31 +18,31 @@ The spec for the `inert` attribute,
 with the existing definition of "inert" already specified,
 is extremely straightforward:
 
-  <h4>The <dfn title="attr-inert"><code>inert</code></dfn> attribute</h4>
+>  <h4>The <dfn title="attr-inert"><code>inert</code></dfn> attribute</h4>
 
-  <p>The <code title="attr-inert">inert</code> attribute is a
-  <span>boolean attribute</span> that indicates, by its presence, that
-  the element is to be made <span>inert</span>.</p>
+>  <p>The <code title="attr-inert">inert</code> attribute is a
+>  <span>boolean attribute</span> that indicates, by its presence, that
+>  the element is to be made <span>inert</span>.</p>
 
-  <div class="impl">
+>  <div class="impl">
 
-  <p>When an element has an <code title="attr-inert">inert</code>
-  attribute, the user agent must mark that element as
-  <span>inert</span>.</p>
+>  <p>When an element has an <code title="attr-inert">inert</code>
+>  attribute, the user agent must mark that element as
+>  <span>inert</span>.</p>
 
-  </div>
+>  </div>
 
-  <p class="note">By default, there is no visual indication of a
-  subtree being inert. Authors are encouraged to clearly mark what
-  parts of their document are active and which are inert, to avoid
-  user confusion. In particular, it is worth remembering that not all
-  users can see all parts of a page at once; for example, users of
-  screen readers, users on small devices or with magnifiers, and even
-  users just using particularly small windows might not be able to see
-  the active part of a page and may get frustrated if inert sections
-  are not obviously inert. For individual controls, the <code
-  title="attr-input-disabled">disabled</code> attribute is probably
-  more appropriate.</p>
+>  <p class="note">By default, there is no visual indication of a
+>  subtree being inert. Authors are encouraged to clearly mark what
+>  parts of their document are active and which are inert, to avoid
+>  user confusion. In particular, it is worth remembering that not all
+>  users can see all parts of a page at once; for example, users of
+>  screen readers, users on small devices or with magnifiers, and even
+>  users just using particularly small windows might not be able to see
+>  the active part of a page and may get frustrated if inert sections
+>  are not obviously inert. For individual controls, the <code
+>  title="attr-input-disabled">disabled</code> attribute is probably
+>  more appropriate.</p>
 
 
 ## The case for `inert` as a primitive
