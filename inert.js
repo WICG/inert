@@ -406,5 +406,13 @@ Object.defineProperty(Element.prototype, 'inert', {
                         set: function(inert) { inertManager.setInert(this, inert) }
                       });
 
+let style = document.createElement('style');
+style.textContent = "\n"+
+                    "[inert] [tabindex] {\n" +
+                    "  outline: 0;\n" +
+                    "  pointer-events: none;\n" +
+                    "}\n";
+document.body.appendChild(style);
+
 })(document);
 
