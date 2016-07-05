@@ -23,22 +23,32 @@ limitations under the License.
       [inert] {
         opacity: 0.5;
       }
+      [inert] [tabindex] {
+        outline: 0;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
-    <p>Declarative API: add <code>inert</code> attribute to any node</p>
-    <p>Imperative API: <code>document.inertManager.setInert(<i>node</i>, <i>true/false</i>);</code></p>
-    <p>Declarative API uses a mutation observer over whole document; comment two lines at bottom of <code>inert.js</code> to disable.</p>
+    <p>Declarative API: <code>$0.setAttribute('inert', '');</code></p>
+    <p>Imperative API: <code>$0.inert = true</code></p>
+    <p>Declarative API uses a mutation observer over whole document.</p>
+    <input>
     <div class="container">
       <a href="#">Foo</a>
       <button>Bar</button>
       <input type="text">
       <div inert class="container">
+        <a href="#foo">link</a>
         <div tabindex="0">tabindex=0</div>
         <div tabindex="-1">tabindex=-1</div>
         <div tabindex="2">tabindex=2</div>
       </div>
     </div>
+    <input>
     <script src="inert.js"></script>
+    <script>
+      document.querySelector('.container').inert = true;
+    </script>
   </body>
 </html>
