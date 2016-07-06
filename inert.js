@@ -107,6 +107,14 @@ class InertRoot {
     // inert root, so all of its managed nodes need to be adopted by this InertRoot.
     if (node !== this._rootElement && node.hasAttribute('inert')) {
       let inertSubRoot = this._inertManager.getInertRoot(node);
+
+      // During initialisation this inert root may not have been registered yet,
+      // so register it now if need be.
+      if (!inertSubRoot) {
+        this._inertManager.setInert(node, true);
+        inertSubRoot = this._inertManager.getInertRoot(node);
+      }
+
       for (let savedInertNode of inertSubRoot.managedNodes) {
         this._inertManager.register(savedInertNode.node, this);
         this._managedNodes.add(savedInertNode);
