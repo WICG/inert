@@ -1,0 +1,33 @@
+{
+  "name": "inert",
+  "version": "1.0.0",
+  "description": "A polyfill for the proposed inert API",
+  "main": "inert.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WICG/inert.git"
+  },
+  "keywords": [
+    "inert",
+    "polyfill",
+    "browser"
+  ],
+  "author": "Alice Boxhall <alice@chromium.org>",
+  "contributors": [
+    "Rob Dodson <robdodson@chromium.org>",
+    "Jesse Beach",
+    "Brian Kardell"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/WICG/inert/issues"
+  },
+  "homepage": "https://github.com/WICG/inert#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
