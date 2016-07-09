@@ -15,13 +15,29 @@
  * limitations under the License.
  */
 
-var expect = chai.expect;
+const expect = chai.expect;
+const fixture = new Fixture();
 
 describe('Inert', function() {
 
   describe('Element.prototype', function() {
     it('should patch the Element prototype', function() {
       expect(Element.prototype.hasOwnProperty('inert')).to.be.ok;
+    });
+  });
+
+  describe('children of inert parent', function() {
+    beforeEach(function(done) {
+      fixture.load('fixtures/basic.html', done);
+    });
+
+    afterEach(function() {
+      fixture.destroy();
+    });
+
+    it('should make implicitly focusable child not focusable', function() {
+      const button = document.querySelector('#fixture button');
+      expect(button.tabIndex).to.equal(-1);
     });
   });
 
