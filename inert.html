@@ -32,12 +32,18 @@ limitations under the License.
       display: block;
     }
 
+    [role=link] {
+      color: rgb(0, 0, 238);
+      text-decoration: underline;
+    }
+
     [inert] {
       opacity: 0.5;
     }
 
-    [inert] * {
-      cursor: default;
+    [tabindex="-1"]:before {
+      content: "[-1] ";
+      font-size: xx-small;
     }
 
     .not {
@@ -47,6 +53,15 @@ limitations under the License.
     [inert] .not {
       display: inline;
     }
+
+    [inert] .inner-not {
+      display: inline;
+    }
+
+    [inert] [inert] .inner-not {
+      display: none;
+    }
+
     </style>
   </head>
   <body>
@@ -98,8 +113,27 @@ limitations under the License.
           <a href="javascript:alert('clicked')">You should<span class="not">n't</span> be able to click this or set focus to it.</em></a>.
 
           <section id="innercontent" inert>
-            <h3>This inner section is marked inert</h3>
-            <p><a href="javascript:alert('clicked')">Toggling the outer inert should not make this link  become clickable.</a></p>
+            <h3>This inner section is <span class="not">not</span> marked inert</h3>
+            <p><a href="javascript:alert('clicked')">Toggling the inner inert should not make this link become clickable.</a></p>
+          </section>
+
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2><label>The container below contains nested containers. The inner one starts non-inert and can be toggled on and off <input id="toggle3" type="checkbox"</label>
+          <label>Toggling the outer inert after toggling the inner inert should not modify its state either. <input id="toggle4" type="checkbox" checked></label> </h2>
+
+      <div id="outercontent" class="container" inert>
+        <p>
+          Clicking the checkbox above will toggle the element's <code>inert</code> property via <pre><code>element.inert = evt.target.checked == true;</code></pre>
+          <a href="javascript:alert('clicked')">You should<span class="not">n't</span> be able to click this or set focus to it.</em></a>.
+
+          <section id="innercontent2">
+            <h3>This inner section is <span class="inner-not">not</span> marked inert</h3>
+            <p><a href="javascript:alert('clicked')">Toggling the inner inert should not make this link become clickable or tabbable.</a></p>
+            <span role="link" tabindex="0">Toggling the inner inert should not make this fake link become tabbable or clickable either.</span>
           </section>
 
         </p>
@@ -109,21 +143,37 @@ limitations under the License.
 
     <script>
       var toggler = document.querySelector('#toggle');
-      toggler.addEventListener('change',
-        function (evt) {
-            document.querySelector('#content').inert = (evt.target.checked == true);
-        },
-        false
-        );
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+              document.querySelector('#content').inert = (evt.target.checked == true);
+          },
+          false);
 
-        toggler = document.querySelector('#toggle2');
-        toggler.addEventListener('change',
-            function (evt) {
-                document.querySelector('#innercontent').inert = (evt.target.checked == true);
-            },
-            false
-        );
-    </script>
+      toggler = document.querySelector('#toggle2');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#innercontent').inert = (evt.target.checked == true);
+          },
+          false);
+
+      toggler = document.querySelector('#toggle3');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#innercontent2').inert = (evt.target.checked == true);
+          },
+          false);
+
+      toggler = document.querySelector('#toggle4');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#outercontent').inert = (evt.target.checked == true);
+          },
+          false);
+</script>
     <script src="inert.js"></script>
   </body>
 </html>
