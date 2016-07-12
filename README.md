@@ -1,5 +1,15 @@
 # `inert` attribute
 
+## Table of contents
+
+* [Table of contents](#table-of-contents)
+* [tl;dr](#tldr)
+* [Background](#background)
+* [Spec](#spec)
+  + [Spec gaps](#spec-gaps)
+* [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
+* [Wouldn't this be better as...](#wouldnt-this-be-better-as)
+
 ## tl;dr
 
 The `inert` attribute would allow web authors to mark parts of the DOM tree as [inert](https://html.spec.whatwg.org/multipage/interaction.html#inert):
@@ -50,6 +60,28 @@ is extremely straightforward:
 >  title="attr-input-disabled">disabled</code> attribute is probably
 >  more appropriate.</p>
 
+### Spec gaps
+
+- The spec does not explicitly state what effect `inert` has on the subtree of the element marked as `inert`,
+however it is implied by the note that `inert` causes the entire subtree of the element with the `inert` attribute to be made [_inert_](https://html.spec.whatwg.org/multipage/interaction.html#inert).
+The polyfill makes the assumption that the entire subtree becomes _inert_.
+  - Furthermore, the spec is unclear as to whether the attribute applies into [shadow trees](https://dom.spec.whatwg.org/#concept-shadow-tree).
+  Consistency with CSS attributes and with inheriting attributes like [`aria-hidden`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-hidden) and [`lang`](http://w3c.github.io/html/dom.html#the-lang-and-xmllang-attributes) imply that it should.
+  The polyfill assumes that it does so.
+- The [existing description of _inert_](https://html.spec.whatwg.org/multipage/interaction.html#inert) is not specific about where pointer events which would have been targeted to an element in an inert subtree should go.
+  (See also: discussion on the [WHATWG pull request](https://github.com/whatwg/html/pull/1474).)
+  Does the event:
+
+  1. go to the next non-inert element in the hit test stack?
+(The inert element is "transparent" for pointer events.)
+  2. go to the next non-inert parent element?
+  3. simply not fire?
+
+  Consistency with `pointer-events` would suggest (ii). The polyfill uses `pointer-events: none` and so models its behaviour.
+- The spec is also not explicit about whether the attribute should be [reflected](http://w3c.github.io/html/infrastructure.html#reflection). The polyfill assumes that it is.
+- The spec does not explicitly state that inert content should be [hidden from assistive technology](https://www.w3.org/WAI/PF/aria-implementation/#exclude_elements2).
+However, typically, the HTML spec does not provide this type of information. The polyfill makes _inert_ content hidden from assistive technology (via `aria-hidden`).
+- The spec does not make explicit that there is no way to "un-inert" a subtree of an inert subtree.
 
 ## The case for `inert` as a primitive
 
@@ -71,3 +103,30 @@ On the implementer side,
 the vast majority of work involved in implementing `inert` is a necessary pre-cursor to both `<dialog>` and `blockingElements` implementations,
 so by implementing `inert` first,
 implementers may get useful functionality into the hands of developers sooner while still laying the groundwork for one or both of these more complex APIs.
+
+## Wouldn't this be better as...
+
+- A **CSS property**?
+
+  `inert` encompasses the behaviour of at least two other things which are CSS properties -
+  `pointer-events: none` and `user-select: none`, plus another attribute, `aria-hidden`.
+  These behaviours, along with the currently near-impossible to achieve behaviour of preventing tabbing/programmatic focus, are very frequently applied together
+  (or if one, such as `aria-hidden`, is omitted, it is more often through lack of awareness than deliberate).
+
+  There is scope for a more primitive CSS property to "explain" the ability of `inert` to prevent focus, however that could easily coexist with the `inert` attribute.
+
+- [`blockingElements`](https://github.com/whatwg/html/issues/897)?
+
+  `blockingElements` (or, potentially, a single `blockingElement`) represents roughly the opposite use case to `inert`:
+  a per-document, single element which blocks the document, analogous to the [blocking behaviour of a modal dialog](https://html.spec.whatwg.org/multipage/interaction.html#blocked-by-a-modal-dialog).
+
+  It's not always the case that we will want a single subtree to be non-inert. Ideally, we would have both concepts available;
+  however, `inert` allows reasonable approximation of `blockingElements` whereas the reverse is not true.
+  - To approximate a `blockingElement` using `inert`, it's most straightforward to insert a non-_inert_ element as a sibling element to the main page content, and then use `inert` to mark the main page content as _inert_.
+    More generally, all siblings of the desired "blocking" element, plus all siblings of all of its ancestors, could be marked _inert_.
+
+- A **programmatic API**?
+
+  Something like `document.makeInert(el)`.
+
+  This would require waiting for script execution before parts of the page became inert, which can take some time.
