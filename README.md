@@ -8,6 +8,7 @@
   + [Spec gaps](#spec-gaps)
 * [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
 * [Wouldn't this be better as...](#wouldnt-this-be-better-as)
+* [Notes on the polyfill](#notes-on-the-polyfill)
 
 ## tl;dr
 
@@ -129,3 +130,27 @@ implementers may get useful functionality into the hands of developers sooner wh
   Something like `document.makeInert(el)`.
 
   This would require waiting for script execution before parts of the page became inert, which can take some time.
+
+## Notes on the polyfill
+
+The polyfill attempts to provide a reasonable fidelity polyfill for the `inert` attribute, however please note:
+
+- It relies on mutation observers to detect the addition of the `inert` attribute, and to detect dynamically added content within inert subtrees.
+Testing for _inert_-ness in any way immediately after either type of mutation will therefore give inconsistent results;
+please allow the current task to end before relying on mutation-related changes to take effect, for example via `Promise.resolve()`.
+
+  Example:
+```js
+const newButton = document.createElement('button');
+const inertContainer = document.querySelector('[inert]');
+inertContainer.appendChild(newButton);
+// Wait for the next microtask to allow mutation observers to react to the DOM change
+Promise.resolve().then(() => {
+    expect(isUnfocusable(newButton)).to.equal(true);
+});
+```
+  - Using the `inert` property, however, is synchronous.
+
+- It will be very expensive performance-wise compared to a native `inert` implementation, because it requires a lot of tree-walking on any relevant mutation
+(applying `inert`, or adding descendant content into `inert` subtrees).
+  - To mitigate this, avoid these types of mutations as much as possible when using this polyfill.
