@@ -4,6 +4,8 @@
 
 The `inert` attribute would allow web authors to mark parts of the DOM tree as [inert](https://html.spec.whatwg.org/multipage/interaction.html#inert):
 
+Try out the [polyfill](https://github.com/WICG/inert/blob/master/inert.js), or look at the [demo page](https://wicg.github.io/inert/inert.html).
+
 > When a node is inert, then the user agent must act as if the node was absent for the purposes of targeting user interaction events, may ignore the node for the purposes of text search user interfaces (commonly known as "find in page"), and may prevent the user from selecting text in that node.
 
 Furthermore, a node which is **inert** should also be hidden from assistive technology.
