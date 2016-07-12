@@ -121,6 +121,19 @@ describe('Basic', function() {
         done();
       });
     });
+
+    it('should apply inside shadow trees', function() {
+      const fixture = document.querySelector('#fixture');
+      fixture.inert = false;
+      const host = document.createElement('div');
+      fixture.appendChild(host);
+      const shadowRoot = host.createShadowRoot();
+      const shadowButton = document.createElement('button');
+      shadowButton.textContent = 'Shadow button';
+      shadowRoot.appendChild(shadowButton);
+      fixture.inert = true;
+      expect(isUnfocusable(shadowButton)).to.equal(true);
+    })
   });
 
   describe('nested inert regions', function() {
