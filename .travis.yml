@@ -1,0 +1,9 @@
+---
+language: node_js
+node_js:
+  - "6"
+
+env:
+  global:
+    - SAUCE_USERNAME=robdodson_inert
+    - SAUCE_ACCESS_KEY=a844aee9-d3ec-4566-94e3-dba3d0c30248

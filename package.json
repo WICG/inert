@@ -4,7 +4,7 @@
   "description": "A polyfill for the proposed inert API",
   "main": "inert.js",
   "scripts": {
-    "test": "mocha"
+    "test": "easy-sauce"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,20 @@
   "homepage": "https://github.com/WICG/inert#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "easy-sauce": "^0.3.4",
     "mocha": "^2.5.3"
+  },
+  "easySauce": {
+    "username": "robdodson_inert",
+    "key": "a844aee9-d3ec-4566-94e3-dba3d0c30248",
+    "tests": "/test/",
+    "port": "8080",
+    "platforms": [
+      [
+        "Windows 10",
+        "chrome",
+        "latest"
+      ]
+    ]
   }
 }
