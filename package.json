@@ -41,6 +41,11 @@
         "Windows 10",
         "chrome",
         "latest"
+      ],
+      [
+        "Linux",
+        "firefox",
+        "latest"
       ]
     ]
   }
