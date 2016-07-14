@@ -122,7 +122,9 @@ implementers may get useful functionality into the hands of developers sooner wh
   + similarly, for content like a menu which may be repeatedly shown to the user,
   avoiding re-rendering this content each time;
   + a carousel or other type of content cycler (such as a "tweet cycler")
-  which hides non-current items by placing them at a lower z-index than the active item;
+  which visually hides non-current items by placing them at a lower z-index than the active item,
+  or by setting their `opacity` to zero,
+  and animates transitions between items;
   + "infinitely scrolling" UI which re-uses and/or pre-renders nodes.
 
 - **On-screen but non-interactive content**
@@ -136,6 +138,11 @@ implementers may get useful functionality into the hands of developers sooner wh
   In these cases developers are once again required to perform contortions in order to ensure that this content is not an accessibility issue.
 
   These cases include:
+
+  + Any of the use cases for [`blockingElement[s]`](https://github.com/whatwg/html/issues/897):
+    * a modal dialog;
+    * a focus-trapping menu;
+    * a [side nav](https://material.google.com/patterns/navigation-drawer.html).
 
   + A slide show or "cover flow" style carousel may have non-active items partially visible,
   as a preview -
