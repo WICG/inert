@@ -10,7 +10,6 @@
   + [Spec gaps](#spec-gaps)
 * [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
 * [Wouldn't this be better as...](#wouldnt-this-be-better-as)
-* [Wait, doesn't "inert" mean something else?](#wait-doesnt-inert-mean-something-else)
 * [Notes on the polyfill](#notes-on-the-polyfill)
 
 ## tl;dr
@@ -177,12 +176,6 @@ implementers may get useful functionality into the hands of developers sooner wh
   Something like `document.makeInert(el)`.
 
   This would require waiting for script execution before parts of the page became inert, which can take some time.
-
-## Wait, doesn't "inert" mean something else?
-
-Yes, the word "inert" is used in the phrase ["associated inert template document"](associated inert template document).
-
-As of 14 July 2016, the [HTML Living Standard document](https://html.spec.whatwg.org/) contains 60 instances of the word "inert"; 4 times used in the sense referred to above, and 56 times used in the sense described by the proposed `inert` attribute.
 
 ## Notes on the polyfill
 
