@@ -1,5 +1,7 @@
 # `inert` attribute
 
+[![Build Status](https://travis-ci.org/WICG/inert.svg?branch=master)](https://travis-ci.org/WICG/inert)
+
 ## Table of contents
 
 * [tl;dr](#tldr)
