@@ -10,6 +10,7 @@
   + [Spec gaps](#spec-gaps)
 * [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
 * [Wouldn't this be better as...](#wouldnt-this-be-better-as)
+* [Wait, doesn't "inert" mean something else?](#wait-doesnt-inert-mean-something-else)
 * [Notes on the polyfill](#notes-on-the-polyfill)
 
 ## tl;dr
