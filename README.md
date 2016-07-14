@@ -106,6 +106,50 @@ the vast majority of work involved in implementing `inert` is a necessary pre-cu
 so by implementing `inert` first,
 implementers may get useful functionality into the hands of developers sooner while still laying the groundwork for one or both of these more complex APIs.
 
+### Use cases
+
+- **Temporarily offscreen/hidden content**
+
+  As discussed in the [article](https://robdodson.me/building-better-accessibility-primitives/#problem2disablingtabindex),
+  there are a range of circumstances in which case it's desirable to add content to the DOM to be rendered but remain offscreen.
+
+  In these cases, without `inert`, authors are forced to choose between
+  an accessible experience for keyboard and assistive technology users,
+  or the factors (such as performance) which make offscreen rendering desirable -
+  or, performing all the contortions necessary to keep the offscreen content functionally "inert".
+
+  These cases include:
+
+  + rendering content, such as a menu, offscreen, before having it animate on-screen;
+  + similarly, for content like a menu which may be repeatedly shown to the user,
+  avoiding re-rendering this content each time;
+  + a carousel or other type of content cycler (such as a "tweet cycler")
+  which visually hides non-current items by placing them at a lower z-index than the active item,
+  or by setting their `opacity` to zero,
+  and animates transitions between items;
+  + "infinitely scrolling" UI which re-uses and/or pre-renders nodes.
+
+- **On-screen but non-interactive content**
+
+  Occasionally, UI designs require that certain content be visible or partially visible,
+  but clearly non-interactive.
+  Typically, this content is made non-interactive for pointer device users
+  either via a semi-transparent overlay which provides a visual cue as well as intercepting pointer events,
+  or via using `pointer-events: none`.
+
+  In these cases developers are once again required to perform contortions in order to ensure that this content is not an accessibility issue.
+
+  These cases include:
+
+  + Any of the use cases for [`blockingElement[s]`](https://github.com/whatwg/html/issues/897):
+    * a modal dialog;
+    * a focus-trapping menu;
+    * a [side nav](https://material.google.com/patterns/navigation-drawer.html).
+
+  + A slide show or "cover flow" style carousel may have non-active items partially visible,
+  as a preview -
+  they may be transformed or partially obscured to indicate that they are non-interactive.
+
 ## Wouldn't this be better as...
 
 - A **CSS property**?
@@ -132,6 +176,12 @@ implementers may get useful functionality into the hands of developers sooner wh
   Something like `document.makeInert(el)`.
 
   This would require waiting for script execution before parts of the page became inert, which can take some time.
+
+## Wait, doesn't "inert" mean something else?
+
+Yes, the word "inert" is used in the phrase ["associated inert template document"](associated inert template document).
+
+As of 14 July 2016, the [HTML Living Standard document](https://html.spec.whatwg.org/) contains 60 instances of the word "inert"; 4 times used in the sense referred to above, and 56 times used in the sense described by the proposed `inert` attribute.
 
 ## Notes on the polyfill
 
