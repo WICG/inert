@@ -126,6 +126,10 @@ describe('Basic', function() {
       const fixture = document.querySelector('#fixture');
       fixture.inert = false;
       const host = document.createElement('div');
+      // Skip this test is Shadow DOM is not supported by the browser
+      if (!host.createShadowRoot) {
+        return;
+      }
       fixture.appendChild(host);
       const shadowRoot = host.createShadowRoot();
       const shadowButton = document.createElement('button');
@@ -247,4 +251,3 @@ describe('Basic', function() {
     });
   });
 });
-
