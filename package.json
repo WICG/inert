@@ -28,7 +28,7 @@
   "homepage": "https://github.com/WICG/inert#readme",
   "devDependencies": {
     "chai": "^3.5.0",
-    "easy-sauce": "^0.3.4",
+    "easy-sauce": "^0.3.5",
     "mocha": "^2.5.3"
   },
   "easySauce": {
@@ -40,6 +40,11 @@
       [
         "Windows 10",
         "chrome",
+        "latest"
+      ],
+      [
+        "Linux",
+        "firefox",
         "latest"
       ]
     ]
