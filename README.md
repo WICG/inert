@@ -28,7 +28,7 @@ The `inert` attribute was [originally specced](https://github.com/whatwg/html/co
  `<dialog>` required the concept of `inert` to be defined in order to describe the blocking behaviour of dialogs,
 and the `inert` attribute was introduced ["so you could do `<dialog>` without `<dialog>`"](https://www.w3.org/Bugs/Public/show_bug.cgi?id=24983#c1).
 
-The attribute was later [removed](https://github.com/whatwg/html/commit/5ddfc78b1f82e86cc202d72ccc752a0e15f1e4ad) as it was the consensus that its only use case was subsumed by `<dialog>`.
+The attribute was later [removed](https://github.com/whatwg/html/commit/5ddfc78b1f82e86cc202d72ccc752a0e15f1e4ad) as it was argued that its only use case was subsumed by `<dialog>`. However, later discussion on the [original bug](https://www.w3.org/Bugs/Public/show_bug.cgi?id=24983) proposed several use cases which could not be handled, or only handled poorly, using `<dialog>`.
 
 ## Spec
 
@@ -149,6 +149,12 @@ implementers may get useful functionality into the hands of developers sooner wh
   + A slide show or "cover flow" style carousel may have non-active items partially visible,
   as a preview -
   they may be transformed or partially obscured to indicate that they are non-interactive.
+
+  + Form content which is not currently relevant,
+  e.g. fading out and disabling the "Shipping Address" fields when the "Same as billing adress" checkbox has been checked.
+
+  + Disabling the entire UI while in an inconsistent state,
+  such as showing a throbber/loading bar during unexpectedly slow loading.
 
 ## Wouldn't this be better as...
 
