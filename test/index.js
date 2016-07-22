@@ -137,7 +137,23 @@ describe('Basic', function() {
       shadowRoot.appendChild(shadowButton);
       fixture.inert = true;
       expect(isUnfocusable(shadowButton)).to.equal(true);
-    })
+    });
+
+    it('should apply inert styles inside shadow trees', function() {
+      const fixture = document.querySelector('#fixture');
+      const host = document.createElement('div');
+      // Skip this test is Shadow DOM is not supported by the browser
+      if (!host.createShadowRoot) {
+        return;
+      }
+      fixture.appendChild(host);
+      const shadowRoot = host.createShadowRoot();
+      const shadowButton = document.createElement('button');
+      shadowButton.textContent = 'Shadow button';
+      shadowRoot.appendChild(shadowButton);
+      shadowButton.inert = true;
+      expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+    });
   });
 
   describe('nested inert regions', function() {
