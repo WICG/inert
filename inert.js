@@ -406,6 +406,17 @@ class InertManager {
       let inertRoot = new InertRoot(root, this);
       root.setAttribute('inert', '');
       this._inertRoots.set(root, inertRoot);
+      // If not contained in the document, it must be in a shadowRoot.
+      // Ensure inert styles are added there.
+      if (!this._document.body.contains(root)) {
+        let parent = root.parentNode;
+        while (parent) {
+          if (parent.nodeType === 11) {
+            addInertStyle(parent);
+          }
+          parent = parent.parentNode;
+        }
+      }
     } else {
       if (!this._inertRoots.has(root))  // element is already non-inert
         return;
@@ -550,6 +561,32 @@ function composedTreeWalk(node, callback, shadowRootAncestor) {
   }
 }
 
+/**
+ * Adds a style element to the node containing the inert specific styles
+ * @param {Node} node
+ */
+function addInertStyle(node) {
+  if (node.querySelector('style#inert-style')) {
+    return;
+  }
+  let style = document.createElement('style');
+  style.setAttribute('id', 'inert-style');
+  style.textContent = "\n"+
+                      "[inert] {\n" +
+                      "  pointer-events: none;\n" +
+                      "  cursor: default;\n" +
+                      "}\n" +
+                      "\n" +
+                      "[inert], [inert] * {\n" +
+                      "  user-select: none;\n" +
+                      "  -webkit-user-select: none;\n" +
+                      "  -moz-user-select: none;\n" +
+                      "  -ms-user-select: none;\n" +
+                      "}\n";
+  node.appendChild(style);
+}
+
+
 let inertManager = new InertManager(document);
 Object.defineProperty(Element.prototype, 'inert', {
                         enumerable: true,
@@ -557,20 +594,6 @@ Object.defineProperty(Element.prototype, 'inert', {
                         set: function(inert) { inertManager.setInert(this, inert) }
                       });
 
-let style = document.createElement('style');
-style.textContent = "\n"+
-                    "[inert] {\n" +
-                    "  pointer-events: none;\n" +
-                    "  cursor: default;\n" +
-                    "}\n" +
-                    "\n" +
-                    "[inert], [inert] * {\n" +
-                    "  user-select: none;\n" +
-                    "  -webkit-user-select: none;\n" +
-                    "  -moz-user-select: none;\n" +
-                    "  -ms-user-select: none;\n" +
-                    "}\n";
-
-document.body.appendChild(style);
+addInertStyle(document.body);
 
 })(document);
