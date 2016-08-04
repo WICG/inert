@@ -291,7 +291,7 @@ class InertNode {
 
   /** @return {Node} */
   get node() {
-    this._throwIfDestroyed;
+    this._throwIfDestroyed();
     return this._node;
   }
 
