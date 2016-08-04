@@ -151,7 +151,7 @@ implementers may get useful functionality into the hands of developers sooner wh
   they may be transformed or partially obscured to indicate that they are non-interactive.
 
   + Form content which is not currently relevant,
-  e.g. fading out and disabling the "Shipping Address" fields when the "Same as billing adress" checkbox has been checked.
+  e.g. fading out and disabling the "Shipping Address" fields when the "Same as billing address" checkbox has been checked.
 
   + Disabling the entire UI while in an inconsistent state,
   such as showing a throbber/loading bar during unexpectedly slow loading.
