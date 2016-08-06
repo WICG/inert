@@ -69,13 +69,44 @@ class InertRoot {
     // Make all focusable elements in the subtree unfocusable and add them to _managedNodes
     this._makeSubtreeUnfocusable(this._rootElement);
 
+    const boundOnMutation = this._onMutation.bind(this);
     // Watch for:
     // - any additions in the subtree: make them unfocusable too
     // - any removals from the subtree: remove them from this inert root's managed nodes
     // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable element,
     //   make that node a managed node.
-    this._observer = new MutationObserver(this._onMutation.bind(this));
+    this._observer = new MutationObserver(boundOnMutation);
     this._observer.observe(this._rootElement, { attributes: true, childList: true, subtree: true });
+
+    // Watch for:
+    // - any additions in the shadowRoot subtree: make them unfocusable too
+    // - any removals from the shadowRoot subtree: remove them from this inert root's managed nodes
+    const rootObserver = new MutationObserver(boundOnMutation);
+    const shadowRoot = this._rootElement.shadowRoot || this._rootElement.webkitShadowRoot;
+    if (shadowRoot) {
+      rootObserver.observe(shadowRoot, { childList: true, subtree: true });
+    } else {
+      // Might create a shadowRoot in the future, either by attachShadow
+      // (ShadowDOM v1) or by createShadowRoot (ShadowDOM v0), so we patch both
+      // of them.
+      const attachShadowFn = this._rootElement.attachShadow;
+      if (attachShadowFn) {
+        this._rootElement.attachShadow = function patchedAttachShadow() {
+          const shadowRoot = attachShadowFn.apply(this, arguments);
+          rootObserver.observe(shadowRoot, { childList: true, subtree: true });
+          return shadowRoot;
+        };
+      }
+      const createShadowRootFn = this._rootElement.createShadowRoot;
+      if (createShadowRootFn) {
+        this._rootElement.createShadowRoot = function patchedCreateShadowRoot() {
+          const shadowRoot = createShadowRootFn.apply(this, arguments);
+          rootObserver.observe(shadowRoot, { childList: true, subtree: true });
+          return shadowRoot;
+        };
+      }
+    }
+    this._rootObserver = rootObserver;
   }
 
   /**
@@ -85,6 +116,9 @@ class InertRoot {
   destructor() {
     this._observer.disconnect();
     this._observer = null;
+
+    this._rootObserver.disconnect();
+    delete this._rootObserver;
 
     if (this._rootElement)
       this._rootElement.removeAttribute('aria-hidden');

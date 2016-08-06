@@ -152,6 +152,34 @@ describe('Basic', function() {
         expect(isUnfocusable(shadowButton)).to.equal(true);
       });
 
+      it('should apply to elements added to shadow trees later in time', function(done) {
+        host.inert = true;
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        // Give time to mutation observers.
+        setTimeout(function() {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
+      });
+
+      it('should apply to elements that create shadow tree later in time', function(done) {
+        fixture.removeChild(host);
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.inert = true;
+        const shadowRoot = host.createShadowRoot();
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        shadowRoot.appendChild(shadowButton);
+        // Give time to mutation observers.
+        setTimeout(function() {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
+      });
+
       it('should apply inert styles inside shadow trees', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
@@ -200,6 +228,36 @@ describe('Basic', function() {
         shadowButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(shadowButton)).to.equal(true);
+      });
+
+      it('should apply to elements added to shadow trees later in time', function(done) {
+        host.inert = true;
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        // Give time to mutation observers.
+        setTimeout(function() {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
+      });
+
+      it('should apply to elements that create shadow tree later in time', function(done) {
+        fixture.removeChild(host);
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.inert = true;
+        const shadowRoot = host.attachShadow({
+          mode: 'open'
+        });
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        shadowRoot.appendChild(shadowButton);
+        // Give time to mutation observers.
+        setTimeout(function() {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
       });
 
       it('should apply inert styles inside shadow trees', function() {
