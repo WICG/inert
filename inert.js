@@ -521,39 +521,52 @@ class InertManager {
   * @param {ShadowRoot=} shadowRootAncestor The nearest ShadowRoot ancestor, if any.
   */
 function composedTreeWalk(node, callback, shadowRootAncestor) {
-  let element = undefined;
-  if (node.nodeType == Node.ELEMENT_NODE)
-    element = /** @type {Element} */ (node);
+  if (node.nodeType == Node.ELEMENT_NODE) {
+    const element = /** @type {Element} */ (node);
+    if (callback)
+      callback(element)
 
-  if (element && callback)
-    callback(element)
-
-  // Descend into node:
-  // If it has a ShadowRoot, ignore all child elements - these will be picked
-  // up by the <content> or <shadow> elements. Descend straight into the
-  // ShadowRoot.
-  if (element) {
-    let shadowRoot = element.shadowRoot || element.webkitShadowRoot;
+    // Descend into node:
+    // If it has a ShadowRoot, ignore all child elements - these will be picked
+    // up by the <content> or <shadow> elements. Descend straight into the
+    // ShadowRoot.
+    const shadowRoot = element.shadowRoot || element.webkitShadowRoot;
     if (shadowRoot) {
       composedTreeWalk(shadowRoot, callback, shadowRoot);
       return;
     }
-  }
 
-  // If it is a <content> element, descend into distributed elements - these
-  // are elements from outside the shadow root which are rendered inside the
-  // shadow DOM.
-  if (element && element.localName == 'content') {
-    let content = /** @type {HTMLContentElement} */ (element);
-    let distributedNodes = content.getDistributedNodes();
-    for (let i = 0; i < distributedNodes.length; i++) {
-      composedTreeWalk(distributedNodes[i], callback, shadowRootAncestor);
+    // If it is a <content> element, descend into distributed elements - these
+    // are elements from outside the shadow root which are rendered inside the
+    // shadow DOM.
+    if (element.localName == 'content') {
+      const content = /** @type {HTMLContentElement} */ (element);
+      // Verifies if ShadowDom v0 is supported.
+      const distributedNodes = content.getDistributedNodes ?
+        content.getDistributedNodes() : [];
+      for (let i = 0; i < distributedNodes.length; i++) {
+        composedTreeWalk(distributedNodes[i], callback, shadowRootAncestor);
+      }
+      return;
     }
-    return;
+
+    // If it is a <slot> element, descend into assigned nodes - these
+    // are elements from outside the shadow root which are rendered inside the
+    // shadow DOM.
+    if (element.localName == 'slot') {
+      const slot = /** @type {HTMLSlotElement} */ (element);
+      // Verify if ShadowDom v1 is supported.
+      const distributedNodes = slot.assignedNodes ?
+        slot.assignedNodes({ flatten: true }) : [];
+      for (let i = 0; i < distributedNodes.length; i++) {
+        composedTreeWalk(distributedNodes[i], callback, shadowRootAncestor);
+      }
+      return;
+    }
   }
 
-  // If it is neither the parent of a ShadowRoot, a <content> element, nor
-  // a <shadow> element recurse normally.
+  // If it is neither the parent of a ShadowRoot, a <content> element, a <slot>
+  // element, nor a <shadow> element recurse normally.
   let child = node.firstChild;
   while (child != null) {
     composedTreeWalk(child, callback, shadowRootAncestor);

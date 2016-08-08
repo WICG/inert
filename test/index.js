@@ -122,37 +122,96 @@ describe('Basic', function() {
       });
     });
 
-    it('should apply inside shadow trees', function() {
-      const fixture = document.querySelector('#fixture');
-      fixture.inert = false;
-      const host = document.createElement('div');
-      // Skip this test is Shadow DOM is not supported by the browser
-      if (!host.createShadowRoot) {
+    describe('ShadowDOM v0', function() {
+      if (!Element.prototype.createShadowRoot) {
+        console.log('ShadowDOM v0 is not supported by the browser.');
         return;
       }
-      fixture.appendChild(host);
-      const shadowRoot = host.createShadowRoot();
-      const shadowButton = document.createElement('button');
-      shadowButton.textContent = 'Shadow button';
-      shadowRoot.appendChild(shadowButton);
-      fixture.inert = true;
-      expect(isUnfocusable(shadowButton)).to.equal(true);
+      let fixture, host;
+
+      beforeEach(function() {
+        fixture = document.querySelector('#fixture');
+        fixture.inert = false;
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.createShadowRoot();
+      });
+
+      afterEach(function() {
+        fixture.removeChild(host);
+      });
+
+      it('should apply inside shadow trees', function() {
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        fixture.inert = true;
+        expect(isUnfocusable(shadowButton)).to.equal(true);
+      });
+
+      it('should apply inert styles inside shadow trees', function() {
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        shadowButton.inert = true;
+        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+      });
+
+      it('should apply inside shadow trees distributed content', function() {
+        host.shadowRoot.appendChild(document.createElement('content'));
+        const distributedButton = document.createElement('button');
+        distributedButton.textContent = 'Distributed button';
+        host.appendChild(distributedButton);
+        fixture.inert = true;
+        expect(isUnfocusable(distributedButton)).to.equal(true);
+      });
     });
 
-    it('should apply inert styles inside shadow trees', function() {
-      const fixture = document.querySelector('#fixture');
-      const host = document.createElement('div');
-      // Skip this test is Shadow DOM is not supported by the browser
-      if (!host.createShadowRoot) {
+    describe('ShadowDOM v1', function() {
+      if (!Element.prototype.attachShadow) {
+        console.log('ShadowDOM v1 is not supported by the browser.');
         return;
       }
-      fixture.appendChild(host);
-      const shadowRoot = host.createShadowRoot();
-      const shadowButton = document.createElement('button');
-      shadowButton.textContent = 'Shadow button';
-      shadowRoot.appendChild(shadowButton);
-      shadowButton.inert = true;
-      expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+      let fixture, host;
+
+      beforeEach(function() {
+        fixture = document.querySelector('#fixture');
+        fixture.inert = false;
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.attachShadow({
+          mode: 'open'
+        });
+      });
+
+      afterEach(function() {
+        fixture.removeChild(host);
+      });
+
+      it('should apply inside shadow trees', function() {
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        fixture.inert = true;
+        expect(isUnfocusable(shadowButton)).to.equal(true);
+      });
+
+      it('should apply inert styles inside shadow trees', function() {
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        shadowButton.inert = true;
+        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+      });
+
+      it('should apply inside shadow trees distributed content', function() {
+        host.shadowRoot.appendChild(document.createElement('slot'));
+        const distributedButton = document.createElement('button');
+        distributedButton.textContent = 'Distributed button';
+        host.appendChild(distributedButton);
+        fixture.inert = true;
+        expect(isUnfocusable(distributedButton)).to.equal(true);
+      });
     });
   });
 
