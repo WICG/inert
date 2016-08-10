@@ -388,9 +388,13 @@ class InertManager {
     for (let inertElement of inertElements)
       this.setInert(inertElement, true);
 
-    // Comment these two lines out to use programmatic API only
+    // Comment these lines out to use programmatic API only
     this._observer = new MutationObserver(this._watchForInert.bind(this));
-    this._observer.observe(document.body, { attributes: true, subtree: true, childList: true });
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', this._observeBody.bind(this));
+    } else {
+      this._observeBody();
+    }
   }
 
   /**
@@ -481,6 +485,13 @@ class InertManager {
     return inertNode;
   }
 
+  /**
+   * Callback used when document has finished loading.
+   */
+  _observeBody() {
+    this._observer.observe(this._document.body, { attributes: true, subtree: true, childList: true });
+    addInertStyle(this._document.body);
+  }
 
   /**
    * Callback used when mutation observer detects attribute changes.
@@ -599,14 +610,12 @@ function addInertStyle(node) {
   node.appendChild(style);
 }
 
-
 let inertManager = new InertManager(document);
+
 Object.defineProperty(Element.prototype, 'inert', {
                         enumerable: true,
                         get: function() { return this.hasAttribute('inert'); },
                         set: function(inert) { inertManager.setInert(this, inert) }
                       });
-
-addInertStyle(document.body);
 
 })(document);
