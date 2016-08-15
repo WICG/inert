@@ -145,6 +145,7 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
+        shadowButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(shadowButton)).to.equal(true);
       });
@@ -153,6 +154,7 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
+        shadowButton.focus();
         shadowButton.inert = true;
         expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
       });
@@ -162,6 +164,7 @@ describe('Basic', function() {
         const distributedButton = document.createElement('button');
         distributedButton.textContent = 'Distributed button';
         host.appendChild(distributedButton);
+        distributedButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(distributedButton)).to.equal(true);
       });
@@ -192,6 +195,7 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
+        shadowButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(shadowButton)).to.equal(true);
       });
@@ -200,6 +204,7 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
+        shadowButton.focus();
         shadowButton.inert = true;
         expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
       });
@@ -209,6 +214,7 @@ describe('Basic', function() {
         const distributedButton = document.createElement('button');
         distributedButton.textContent = 'Distributed button';
         host.appendChild(distributedButton);
+        distributedButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(distributedButton)).to.equal(true);
       });
