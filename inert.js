@@ -110,6 +110,24 @@ class InertRoot {
    */
   _makeSubtreeUnfocusable(startNode) {
     composedTreeWalk(startNode, (node) => { this._visitNode(node); });
+
+    let activeElement = document.activeElement;
+    if (!document.contains(startNode)) {
+      // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
+      let node = startNode;
+      let root = undefined;
+      while (node) {
+        if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+          root = node;
+          break;
+        }
+        node = node.parentNode;
+      }
+      if (root)
+        activeElement = root.activeElement
+    }
+    if (startNode.contains(activeElement))
+      activeElement.blur();
   }
 
   /**
@@ -310,7 +328,6 @@ class InertNode {
   /** Save the existing tabindex value and make the node untabbable and unfocusable */
   ensureUntabbable() {
     const node = this.node;
-    node.blur();  // TODO(alice): is this right?
     if (node.matches(_focusableElementsString)) {
       if (node.tabIndex === -1 && this.hasSavedTabIndex)
         return;
