@@ -199,7 +199,7 @@ class InertRoot {
           // If a new inert root is added, adopt its managed nodes and make sure it knows about the
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
-          let inertSubroot = this._inertManager.getInertRoot(target);
+          const inertSubroot = this._inertManager.getInertRoot(target);
           for (let managedNode of this._managedNodes) {
             if (target.contains(managedNode.node))
               inertSubroot._manageNode(managedNode.node);
@@ -407,7 +407,7 @@ class InertManager {
       if (this._inertRoots.has(root))   // element is already inert
         return;
 
-      let inertRoot = new InertRoot(root, this);
+      const inertRoot = new InertRoot(root, this);
       root.setAttribute('inert', '');
       this._inertRoots.set(root, inertRoot);
       // If not contained in the document, it must be in a shadowRoot.
@@ -425,7 +425,7 @@ class InertManager {
       if (!this._inertRoots.has(root))  // element is already non-inert
         return;
 
-      let inertRoot = this._inertRoots.get(root);
+      const inertRoot = this._inertRoots.get(root);
       inertRoot.destructor();
       this._inertRoots.delete(root);
       root.removeAttribute('inert');
@@ -490,10 +490,9 @@ class InertManager {
    */
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
-    let inertElements = Array.from(this._document.querySelectorAll('[inert]'));
-    for (let inertElement of inertElements) {
+    const inertElements = Array.from(this._document.querySelectorAll('[inert]'));
+    for (let inertElement of inertElements)
       this.setInert(inertElement, true);
-    }
 
     // Add inert style.
     addInertStyle(this._document.body);
@@ -514,7 +513,7 @@ class InertManager {
         for (let node of Array.from(record.addedNodes)) {
           if (node.nodeType !== Node.ELEMENT_NODE)
             continue;
-          let inertElements = Array.from(node.querySelectorAll('[inert]'));
+          const inertElements = Array.from(node.querySelectorAll('[inert]'));
           if (node.matches('[inert]'))
             inertElements.unshift(node);
           for (let inertElement of inertElements)
@@ -524,8 +523,8 @@ class InertManager {
       case 'attributes':
         if (record.attributeName !== 'inert')
           continue;
-        let target = record.target;
-        let inert = target.hasAttribute('inert');
+        const target = record.target;
+        const inert = target.hasAttribute('inert');
         this.setInert(target, inert);
         break;
       }
@@ -602,7 +601,7 @@ function addInertStyle(node) {
   if (node.querySelector('style#inert-style')) {
     return;
   }
-  let style = document.createElement('style');
+  const style = document.createElement('style');
   style.setAttribute('id', 'inert-style');
   style.textContent = "\n"+
                       "[inert] {\n" +
@@ -619,7 +618,7 @@ function addInertStyle(node) {
   node.appendChild(style);
 }
 
-let inertManager = new InertManager(document);
+const inertManager = new InertManager(document);
 
 Object.defineProperty(Element.prototype, 'inert', {
                         enumerable: true,
