@@ -383,17 +383,17 @@ class InertManager {
      */
     this._inertRoots = new Map();
 
-    // Find all inert roots in document and make them actually inert.
-    let inertElements = Array.from(document.querySelectorAll('[inert]'));
-    for (let inertElement of inertElements)
-      this.setInert(inertElement, true);
-
-    // Comment these lines out to use programmatic API only
+    /**
+     * Observer for mutations on `document.body`.
+     * @type {MutationObserver}
+     */
     this._observer = new MutationObserver(this._watchForInert.bind(this));
+
+    // Wait for document to be loaded.
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', this._observeBody.bind(this));
+      document.addEventListener('DOMContentLoaded', this._onDocumentLoaded.bind(this));
     } else {
-      this._observeBody();
+      this._onDocumentLoaded();
     }
   }
 
@@ -488,9 +488,18 @@ class InertManager {
   /**
    * Callback used when document has finished loading.
    */
-  _observeBody() {
-    this._observer.observe(this._document.body, { attributes: true, subtree: true, childList: true });
+  _onDocumentLoaded() {
+    // Find all inert roots in document and make them actually inert.
+    let inertElements = Array.from(this._document.querySelectorAll('[inert]'));
+    for (let inertElement of inertElements) {
+      this.setInert(inertElement, true);
+    }
+
+    // Add inert style.
     addInertStyle(this._document.body);
+
+    // Comment this out to use programmatic API only.
+    this._observer.observe(this._document.body, { attributes: true, subtree: true, childList: true });
   }
 
   /**
