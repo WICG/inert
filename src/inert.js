@@ -86,9 +86,9 @@ class InertRoot {
     if (shadowRoot) {
       rootObserver.observe(shadowRoot, { childList: true, subtree: true });
     } else {
-      // Might create a shadowRoot in the future, either by attachShadow
-      // (ShadowDOM v1) or by createShadowRoot (ShadowDOM v0), so we patch both
-      // of them.
+      // ShadowDOM v1 support.
+      // NOTE(valdrin) There is no way to observe shadow root attachment (yet),
+      // patching might be slow https://github.com/w3c/webcomponents/issues/204
       const attachShadowFn = this._rootElement.attachShadow;
       if (attachShadowFn) {
         this._rootElement.attachShadow = function patchedAttachShadow() {
@@ -97,6 +97,9 @@ class InertRoot {
           return shadowRoot;
         };
       }
+      // ShadowDOM v0 support.
+      // NOTE(valdrin) There is no way to observe shadow root attachment (yet),
+      // patching might be slow https://github.com/w3c/webcomponents/issues/204
       const createShadowRootFn = this._rootElement.createShadowRoot;
       if (createShadowRootFn) {
         this._rootElement.createShadowRoot = function patchedCreateShadowRoot() {
@@ -118,7 +121,7 @@ class InertRoot {
     this._observer = null;
 
     this._rootObserver.disconnect();
-    delete this._rootObserver;
+    this._rootObserver = null;
 
     if (this._rootElement)
       this._rootElement.removeAttribute('aria-hidden');
