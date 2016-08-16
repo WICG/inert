@@ -84,18 +84,18 @@ class InertRoot {
    */
   destructor() {
     this._observer.disconnect();
-    delete this._observer;
+    this._observer = null;
 
     if (this._rootElement)
       this._rootElement.removeAttribute('aria-hidden');
-    delete this._rootElement;
+    this._rootElement = null;
 
     for (let inertNode of this._managedNodes)
       this._unmanageNode(inertNode.node);
 
-    delete this._managedNodes;
+    this._managedNodes = null;
 
-    delete this._inertManager;
+    this._inertManager = null;
   }
 
   /**
@@ -280,11 +280,12 @@ class InertNode {
       else
         this._node.removeAttribute('tabindex');
 
+      // Use `delete` to restore native focus method.
       if (this._overrodeFocusMethod)
         delete this._node.focus;
     }
-    delete this._node;
-    delete this._inertRoots;
+    this._node = null;
+    this._inertRoots = null;
 
     this._destroyed = true;
   }
