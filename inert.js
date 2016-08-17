@@ -389,6 +389,10 @@ class InertManager {
      */
     this._observer = new MutationObserver(this._watchForInert.bind(this));
 
+
+    // Add inert style, assume document has <head>.
+    addInertStyle(document.head);
+
     // Wait for document to be loaded.
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', this._onDocumentLoaded.bind(this));
@@ -493,9 +497,6 @@ class InertManager {
     const inertElements = Array.from(this._document.querySelectorAll('[inert]'));
     for (let inertElement of inertElements)
       this.setInert(inertElement, true);
-
-    // Add inert style.
-    addInertStyle(this._document.body);
 
     // Comment this out to use programmatic API only.
     this._observer.observe(this._document.body, { attributes: true, subtree: true, childList: true });
