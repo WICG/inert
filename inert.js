@@ -390,8 +390,8 @@ class InertManager {
     this._observer = new MutationObserver(this._watchForInert.bind(this));
 
 
-    // Add inert style, assume document has <head>.
-    addInertStyle(document.head);
+    // Add inert style.
+    addInertStyle(document.head || document.body || document.documentElement);
 
     // Wait for document to be loaded.
     if (document.readyState === 'loading') {
