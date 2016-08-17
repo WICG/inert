@@ -15,6 +15,7 @@ limitations under the License.
   <head>
     <meta charset="utf-8">
     <title>inert polyfill test page</title>
+    <script src="inert.js"></script>
     <style>
     .container {
       border: 1px solid gray;
@@ -140,7 +141,6 @@ limitations under the License.
       </div>
     </section>
 
-
     <script>
       var toggler = document.querySelector('#toggle');
       toggler.addEventListener(
@@ -173,7 +173,6 @@ limitations under the License.
             document.querySelector('#outercontent').inert = (evt.target.checked == true);
           },
           false);
-</script>
-    <script src="inert.js"></script>
+    </script>
   </body>
 </html>
