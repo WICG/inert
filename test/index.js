@@ -101,7 +101,7 @@ describe('Basic', function() {
       newButton.textContent = 'Click me too';
       const inertContainer = document.querySelector('[inert]');
       inertContainer.appendChild(newButton);
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
+      // Wait for the next microtask to allow mutation observers to react to the DOM change.
       Promise.resolve().then(() => {
         expect(isUnfocusable(newButton)).to.equal(true);
         done();
@@ -115,7 +115,7 @@ describe('Basic', function() {
       expect(temp.parentElement).to.eql(fixture);
       temp.outerHTML = '<div id="inert2" inert><button>Click me</button></div>';
       const div = fixture.querySelector('#inert2');
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
+      // Wait for the next microtask to allow mutation observers to react to the DOM change.
       Promise.resolve().then(() => {
         expect(div.inert).to.equal(true);
         const button = div.querySelector('button');
@@ -157,8 +157,8 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
-        // Give time to mutation observers.
-        setTimeout(function() {
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
           expect(isUnfocusable(shadowButton)).to.equal(true);
           done();
         });
@@ -173,8 +173,8 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         shadowRoot.appendChild(shadowButton);
-        // Give time to mutation observers.
-        setTimeout(function() {
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
           expect(isUnfocusable(shadowButton)).to.equal(true);
           done();
         });
@@ -235,8 +235,8 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
-        // Give time to mutation observers.
-        setTimeout(function() {
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
           expect(isUnfocusable(shadowButton)).to.equal(true);
           done();
         });
@@ -253,8 +253,8 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         shadowRoot.appendChild(shadowButton);
-        // Give time to mutation observers.
-        setTimeout(function() {
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
           expect(isUnfocusable(shadowButton)).to.equal(true);
           done();
         });
