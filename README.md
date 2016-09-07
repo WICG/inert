@@ -33,7 +33,7 @@ The attribute was later [removed](https://github.com/whatwg/html/commit/5ddfc78b
 ## Spec
 
 The spec for the `inert` attribute,
-with the existing definition of "inert" already specified,
+with [the existing definition of "inert" already specified](https://html.spec.whatwg.org/multipage/interaction.html#inert),
 is extremely straightforward:
 
 >  <h4>The <dfn title="attr-inert"><code>inert</code></dfn> attribute</h4>
