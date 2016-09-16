@@ -185,6 +185,11 @@ implementers may get useful functionality into the hands of developers sooner wh
 
 ## Notes on the polyfill
 
+The `dist` directory contains two versions of the polyfill. `inert.js` is the debug version, containing an inlined sourcemap, `inert.min.js` is
+the production version, minified to be as small as possible. These are both
+generated from the ES6 version of `inert.js` which lives in the root directory,
+and can be used if you don't need to worry about transpilation.
+
 The polyfill attempts to provide a reasonable fidelity polyfill for the `inert` attribute, however please note:
 
 - It relies on mutation observers to detect the addition of the `inert` attribute, and to detect dynamically added content within inert subtrees.

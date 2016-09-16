@@ -4,7 +4,7 @@
   "description": "A polyfill for the proposed inert API",
   "main": "inert.js",
   "scripts": {
-    "test": "easy-sauce"
+    "test": "gulp && easy-sauce"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,16 @@
   },
   "homepage": "https://github.com/WICG/inert#readme",
   "devDependencies": {
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-es2015": "^6.13.2",
     "chai": "^3.5.0",
+    "del": "^2.2.2",
     "easy-sauce": "^0.3.5",
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-babel": "^6.1.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^2.0.0",
     "mocha": "^2.5.3"
   },
   "easySauce": {
