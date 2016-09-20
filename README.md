@@ -2,15 +2,20 @@
 
 [![Build Status](https://travis-ci.org/WICG/inert.svg?branch=master)](https://travis-ci.org/WICG/inert)
 
-## Table of contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
 
-* [tl;dr](#tldr)
-* [Background](#background)
-* [Spec](#spec)
-  + [Spec gaps](#spec-gaps)
-* [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
-* [Wouldn't this be better as...](#wouldnt-this-be-better-as)
-* [Notes on the polyfill](#notes-on-the-polyfill)
+- [tl;dr](#tldr)
+- [Background](#background)
+- [Spec](#spec)
+  - [Spec gaps](#spec-gaps)
+- [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
+  - [Use cases](#use-cases)
+- [Wouldn't this be better as...](#wouldnt-this-be-better-as)
+- [Notes on the polyfill](#notes-on-the-polyfill)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## tl;dr
 
