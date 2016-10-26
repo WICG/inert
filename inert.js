@@ -633,6 +633,8 @@ function addInertStyle(node) {
                       "  -webkit-user-select: none;\n" +
                       "  -moz-user-select: none;\n" +
                       "  -ms-user-select: none;\n" +
+                      "  overflow: hidden !important;\n" +
+                      "  user-modify: none !important;\n" +
                       "}\n";
   node.appendChild(style);
 }
