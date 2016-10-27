@@ -47,8 +47,8 @@ const _focusableElementsString = ['a[href]',
  */
 class InertRoot {
   /**
-   * @param {Element} rootElement The Element at the root of the inert subtree.
-   * @param {InertManager} inertManager The global singleton InertManager object.
+   * @param {!Element} rootElement The Element at the root of the inert subtree.
+   * @param {!InertManager} inertManager The global singleton InertManager object.
    */
   constructor(rootElement, inertManager) {
     /** @type {InertManager} */
@@ -123,8 +123,10 @@ class InertRoot {
     this._rootObserver.disconnect();
     this._rootObserver = null;
 
-    if (this._rootElement)
-      this._rootElement.removeAttribute('aria-hidden');
+    this._rootElement.removeAttribute('aria-hidden');
+    // Restore original attachShadow and createShadowRoot.
+    delete this._rootElement.attachShadow;
+    delete this._rootElement.createShadowRoot;
     this._rootElement = null;
 
     for (let inertNode of this._managedNodes)
