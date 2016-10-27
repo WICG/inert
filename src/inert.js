@@ -69,47 +69,23 @@ class InertRoot {
     // Make all focusable elements in the subtree unfocusable and add them to _managedNodes
     this._makeSubtreeUnfocusable(this._rootElement);
 
-    const boundOnMutation = this._onMutation.bind(this);
+    this._onMutation = this._onMutation.bind(this);
     // Watch for:
     // - any additions in the subtree: make them unfocusable too
     // - any removals from the subtree: remove them from this inert root's managed nodes
     // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable element,
     //   make that node a managed node.
-    this._observer = new MutationObserver(boundOnMutation);
+    this._observer = new MutationObserver(this._onMutation);
     this._observer.observe(this._rootElement, { attributes: true, childList: true, subtree: true });
 
     // Watch for:
     // - any additions in the shadowRoot subtree: make them unfocusable too
     // - any removals from the shadowRoot subtree: remove them from this inert root's managed nodes
-    const rootObserver = new MutationObserver(boundOnMutation);
-    const shadowRoot = this._rootElement.shadowRoot || this._rootElement.webkitShadowRoot;
-    if (shadowRoot) {
-      rootObserver.observe(shadowRoot, { childList: true, subtree: true });
-    } else {
-      // ShadowDOM v1 support.
-      // NOTE(valdrin) There is no way to observe shadow root attachment (yet),
-      // patching might be slow https://github.com/w3c/webcomponents/issues/204
-      const attachShadowFn = this._rootElement.attachShadow;
-      if (attachShadowFn) {
-        this._rootElement.attachShadow = function patchedAttachShadow() {
-          const shadowRoot = attachShadowFn.apply(this, arguments);
-          rootObserver.observe(shadowRoot, { childList: true, subtree: true });
-          return shadowRoot;
-        };
-      }
-      // ShadowDOM v0 support.
-      // NOTE(valdrin) There is no way to observe shadow root attachment (yet),
-      // patching might be slow https://github.com/w3c/webcomponents/issues/204
-      const createShadowRootFn = this._rootElement.createShadowRoot;
-      if (createShadowRootFn) {
-        this._rootElement.createShadowRoot = function patchedCreateShadowRoot() {
-          const shadowRoot = createShadowRootFn.apply(this, arguments);
-          rootObserver.observe(shadowRoot, { childList: true, subtree: true });
-          return shadowRoot;
-        };
-      }
-    }
+    const rootObserver = new MutationObserver(this._onMutation);
     this._rootObserver = rootObserver;
+    patchShadowRootCreation(this._rootElement, (shadowRoot) => {
+      rootObserver.observe(shadowRoot, { childList: true, subtree: true });
+    });
   }
 
   /**
@@ -124,9 +100,7 @@ class InertRoot {
     this._rootObserver = null;
 
     this._rootElement.removeAttribute('aria-hidden');
-    // Restore original attachShadow and createShadowRoot.
-    delete this._rootElement.attachShadow;
-    delete this._rootElement.createShadowRoot;
+    unpatchShadowRootCreation(this._rootElement);
     this._rootElement = null;
 
     for (let inertNode of this._managedNodes)
@@ -674,6 +648,57 @@ function addInertStyle(node) {
                       "  -ms-user-select: none;\n" +
                       "}\n";
   node.appendChild(style);
+}
+
+/**
+ * Invokes the callback after the element attaches the shadow root. If `element`
+ * has already a shadowRoot, the `callback` is invoked immediately.
+ * Need to patch `attachShadow` and `createShadowRoot` methods as there is
+ * no way to observe shadow root attachment (yet), see w3c/webcomponents#204
+ * @param {!Element} element
+ * @param {!Function(DocumentFragment)} callback
+ */
+function patchShadowRootCreation(element, callback) {
+  const shadowRoot = element.shadowRoot || element.webkitShadowRoot;
+  if (shadowRoot) {
+    callback(shadowRoot);
+  } else {
+    // ShadowDOM v1 support.
+    const attachShadowFn = element.attachShadow;
+    if (attachShadowFn) {
+      element.attachShadow = function patchedAttachShadow() {
+        const shadowRoot = attachShadowFn.apply(this, arguments);
+        callback(shadowRoot);
+        return shadowRoot;
+      };
+      element.attachShadow._originalFn = attachShadowFn;
+    }
+    // ShadowDOM v0 support.
+    const createShadowRootFn = element.createShadowRoot;
+    if (createShadowRootFn) {
+      element.createShadowRoot = function patchedCreateShadowRoot() {
+        const shadowRoot = createShadowRootFn.apply(this, arguments);
+        callback(shadowRoot);
+        return shadowRoot;
+      };
+      element.createShadowRoot._originalFn = createShadowRootFn;
+    }
+  }
+}
+
+/**
+ * Restores the original `attachShadow` and `createShadowRoot` methods of `element`.
+ * @param {!Element} element
+ */
+function unpatchShadowRootCreation(element) {
+  // ShadowDOM v1 support.
+  if (element.attachShadow && element.attachShadow._originalFn) {
+    element.attachShadow = element.attachShadow._originalFn;
+  }
+  // ShadowDOM v0 support.
+  if (element.createShadowRoot && element.createShadowRoot._originalFn) {
+    element.createShadowRoot = element.createShadowRoot._originalFn;
+  }
 }
 
 const inertManager = new InertManager(document);
