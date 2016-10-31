@@ -1,6 +1,8 @@
 # `inert` attribute
 
 [![Build Status](https://travis-ci.org/WICG/inert.svg?branch=master)](https://travis-ci.org/WICG/inert)
+[![Dependencies Status](https://david-dm.org/WICG/inert/status.svg)](https://david-dm.org/WICG/inert)
+[![DevDependencies Status](https://david-dm.org/WICG/inert/dev-status.svg)](https://david-dm.org/WICG/inert?type=dev)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
