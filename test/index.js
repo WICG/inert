@@ -206,7 +206,10 @@ describe('Basic', function() {
         host.shadowRoot.appendChild(shadowButton);
         shadowButton.focus();
         shadowButton.inert = true;
-        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+        Promise.resolve().then(() => {
+           expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+           done();
+        });
       });
 
       it('should apply inside shadow trees distributed content', function() {
