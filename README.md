@@ -29,6 +29,12 @@ Try out the [polyfill](https://github.com/WICG/inert/blob/master/inert.js), or l
 
 Furthermore, a node which is **inert** should also be hidden from assistive technology.
 
+## Install
+
+```
+npm install --save wicg-inert
+```
+
 ## Background
 
 The `inert` attribute was [originally specced](https://github.com/whatwg/html/commit/2fb24fcf) as part of the `<dialog>` element specification.
