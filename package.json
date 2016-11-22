@@ -1,5 +1,5 @@
 {
-  "name": "inert",
+  "name": "wicg-inert",
   "version": "1.0.0",
   "description": "A polyfill for the proposed inert API",
   "main": "inert.js",
