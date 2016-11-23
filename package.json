@@ -2,7 +2,7 @@
   "name": "wicg-inert",
   "version": "1.0.2",
   "description": "A polyfill for the proposed inert API",
-  "main": "inert.js",
+  "main": "dist/inert.js",
   "scripts": {
     "test": "gulp && easy-sauce"
   },

@@ -7,7 +7,7 @@ var del = require('del');
 
 var paths = {
   scripts: {
-    src: './inert.js',
+    src: './src/inert.js',
     dest: 'dist'
   }
 };
@@ -22,7 +22,6 @@ function scripts() {
     .pipe(babel({
       presets: ['es2015']
     }))
-    .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.scripts.dest))
     .pipe(uglify())
     .pipe(rename('inert.min.js'))
