@@ -41,6 +41,7 @@
     "whatwg-fetch": "^1.0.0"
   },
   "easySauce": {
+    "service": "sauce-connect",
     "username": "robdodson_inert",
     "key": "a844aee9-d3ec-4566-94e3-dba3d0c30248",
     "testPath": "/test/",
