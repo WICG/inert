@@ -9,8 +9,6 @@
 **Table of Contents**
 
 - [tl;dr](#tldr)
-- [Install](#install)
-  - [Legacy Browser Support](#legacy-browser-support)
 - [Background](#background)
 - [Spec](#spec)
   - [Spec gaps](#spec-gaps)
@@ -18,6 +16,8 @@
   - [Use cases](#use-cases)
 - [Wouldn't this be better as...](#wouldnt-this-be-better-as)
 - [Notes on the polyfill](#notes-on-the-polyfill)
+  - [Install](#install)
+  - [Legacy Browser Support](#legacy-browser-support)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -29,7 +29,7 @@ The `inert` attribute would allow web authors to mark parts of the DOM tree as [
 
 Furthermore, a node which is **inert** should also be hidden from assistive technology.
 
-Try out the [polyfill](https://github.com/WICG/inert/blob/master/inert.js), or look at the [demo page](https://wicg.github.io/inert/inert.html).
+Try out the [polyfill](#notes-on-the-polyfill), or look at the [demo page](https://wicg.github.io/inert/inert.html).
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
@@ -224,7 +224,7 @@ Promise.resolve().then(() => {
 - It will be very expensive performance-wise compared to a native `inert` implementation, because it requires a lot of tree-walking on any relevant mutation
 (applying `inert`, or adding descendant content into `inert` subtrees).
   - To mitigate this, avoid these types of mutations as much as possible when using this polyfill.
-  
+
 ### Install
 
 ```
