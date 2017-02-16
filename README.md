@@ -31,17 +31,6 @@ Furthermore, a node which is **inert** should also be hidden from assistive tech
 
 Try out the [polyfill](https://github.com/WICG/inert/blob/master/inert.js), or look at the [demo page](https://wicg.github.io/inert/inert.html).
 
-## Install
-
-```
-npm install --save wicg-inert
-```
-
-### Legacy Browser Support
-
-If you want to use `inert` with an older browser or JavaScript runtime like PhantomJS you'll need to include a polyfill for Map and Set, such as [babel-polyfill](https://babeljs.io/docs/usage/polyfill/).
-[As suggested on StackOverflow](http://stackoverflow.com/a/40388592/712889), try adding the following to the document in your build process:
-
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
 ```
@@ -235,3 +224,14 @@ Promise.resolve().then(() => {
 - It will be very expensive performance-wise compared to a native `inert` implementation, because it requires a lot of tree-walking on any relevant mutation
 (applying `inert`, or adding descendant content into `inert` subtrees).
   - To mitigate this, avoid these types of mutations as much as possible when using this polyfill.
+  
+### Install
+
+```
+npm install --save wicg-inert
+```
+
+### Legacy Browser Support
+
+If you want to use `inert` with an older browser or JavaScript runtime like PhantomJS you'll need to include a polyfill for Map and Set, such as [babel-polyfill](https://babeljs.io/docs/usage/polyfill/).
+[As suggested on StackOverflow](http://stackoverflow.com/a/40388592/712889), try adding the following to the document in your build process:
