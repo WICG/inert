@@ -112,7 +112,21 @@ Rob Dodson lays out one such example in his article ["Building better accessibil
 > and as others have pointed out,
 > you'd hit if you tried to build something like coverflow where you can see a preview of the next element but can't actually interact with it yet.
 
-`inert` would also allow more straightforward polyfilling of both `<dialog>` and the proposed, more primitive [`blockingElements`](https://github.com/whatwg/html/issues/897) API.
+`inert` would also allow slightly more straightforward polyfilling of both `<dialog>`
+and the proposed, more primitive 
+[`blockingElements`](https://github.com/whatwg/html/issues/897) 
+API.
+See 
+[Polymer Labs' `blockingElements` polyfill](https://github.com/PolymerLabs/blockingElements/blob/master/demo/index.html), 
+based on this polyfill,
+for an example of how `inert` may be used for this purpose.
+Currently, since there is no way to express the "inertness" concept,
+polyfilling these APIs requires both focus event trapping
+to avoid focus cycling out of the dialog/blocking element
+(and thus as a side effect may prevent focus from walking out of the page at all)
+and a tree-walk
+(usually neglected by developers)
+to set `aria-hidden` on all sibling elements of the dialog or blocking element.
 
 On the implementer side,
 the vast majority of work involved in implementing `inert` is a necessary pre-cursor to both `<dialog>` and `blockingElements` implementations,
