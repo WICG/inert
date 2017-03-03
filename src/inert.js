@@ -112,7 +112,7 @@ class InertRoot {
     composedTreeWalk(startNode, (node) => { this._visitNode(node); });
 
     let activeElement = document.activeElement;
-    if (!document.contains(startNode)) {
+    if (!document.body.contains(startNode)) {
       // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
       let node = startNode;
       let root = undefined;
