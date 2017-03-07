@@ -31,10 +31,6 @@ Furthermore, a node which is **inert** should also be hidden from assistive tech
 
 Try out the [polyfill](#notes-on-the-polyfill), or look at the [demo page](https://wicg.github.io/inert/inert.html).
 
-```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
-```
-
 ## Background
 
 The `inert` attribute was [originally specced](https://github.com/whatwg/html/commit/2fb24fcf) as part of the `<dialog>` element specification.
@@ -249,3 +245,7 @@ npm install --save wicg-inert
 
 If you want to use `inert` with an older browser or JavaScript runtime like PhantomJS you'll need to include a polyfill for Map and Set, such as [babel-polyfill](https://babeljs.io/docs/usage/polyfill/).
 [As suggested on StackOverflow](http://stackoverflow.com/a/40388592/712889), try adding the following to the document in your build process:
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
+```
