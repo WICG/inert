@@ -1,0 +1,178 @@
+<!--
+Copyright 2016 Google Inc. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>inert polyfill test page</title>
+    <style>
+    .container {
+      border: 1px solid gray;
+      padding: 1em;
+      margin-bottom: 2em;
+    }
+
+    pre {
+      margin: 1em;
+      background-color: #f0e5e5;
+      padding: 0.5em;
+    }
+
+    label {
+      display: block;
+    }
+
+    [role=link] {
+      color: rgb(0, 0, 238);
+      text-decoration: underline;
+    }
+
+    [inert] {
+      opacity: 0.5;
+    }
+
+    [tabindex="-1"]:before {
+      content: "[-1] ";
+      font-size: xx-small;
+    }
+
+    .not {
+      display: none;
+    }
+
+    [inert] .not {
+      display: inline;
+    }
+
+    [inert] .inner-not {
+      display: inline;
+    }
+
+    [inert] [inert] .inner-not {
+      display: none;
+    }
+
+    </style>
+  </head>
+  <body>
+
+    <h1>What even is this?</h1>
+    <p>A demo/test page for an experimental <code>inert</code> prollyfill. <a href="https://github.com/wicg/inert">See the readme for the <code>inert</code> github project</a> for more information.</p>
+
+
+    <section>
+      <h2>The container below is marked declaratively in the source with the <code>inert</code> attribute</h2>
+      <div class="container" inert>
+        <p>By adding the <code>inert</code> attribute to any element you make the elements inside it unfocusable (by mouse, pointer events or keyboard tabbing.
+          <a href="javascript:alert('clicked')">You shouldn't be able to click this or set focus to it because it is inside a container that is inert.</a></p>
+        <label>
+          This checkbox is inside the inert container too<input type="checkbox">
+        </label>
+
+        <label>
+          This field is inside the inert container too<input>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2><label>The container below can be toggled inert on and off <input id="toggle" type="checkbox"></label> </h2>
+
+      <div class="container" id="content">
+        <p>
+          Clicking the checkbox above will toggle the element's <code>inert</code> property via <pre><code>element.inert = evt.target.checked == true;</code></pre>
+          <a href="javascript:alert('clicked')">You should<span class="not">n't</span> be able to click this or set focus to it.</em></a>.
+
+          <section inert>
+            <h3>This inner section is marked inert</h3>
+            <p><a href="javascript:alert('clicked')">Toggling the outer inert should not make this link  become clickable.</a></p>
+          </section>
+
+        </p>
+      </div>
+    </section>
+
+
+
+    <section>
+      <h2><label>The container below contains nested <code>inert</code> containers.  The inner one can be toggled on and off <input id="toggle2" type="checkbox" checked></label> </h2>
+
+      <div class="container" inert>
+        <p>
+          Clicking the checkbox above will toggle the element's <code>inert</code> property via <pre><code>element.inert = evt.target.checked == true;</code></pre>
+          <a href="javascript:alert('clicked')">You should<span class="not">n't</span> be able to click this or set focus to it.</em></a>.
+
+          <section id="innercontent" inert>
+            <h3>This inner section is <span class="not">not</span> marked inert</h3>
+            <p><a href="javascript:alert('clicked')">Toggling the inner inert should not make this link become clickable.</a></p>
+          </section>
+
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2><label>The container below contains nested containers. The inner one starts non-inert and can be toggled on and off <input id="toggle3" type="checkbox"</label>
+          <label>Toggling the outer inert after toggling the inner inert should not modify its state either. <input id="toggle4" type="checkbox" checked></label> </h2>
+
+      <div id="outercontent" class="container" inert>
+        <p>
+          Clicking the checkbox above will toggle the element's <code>inert</code> property via <pre><code>element.inert = evt.target.checked == true;</code></pre>
+          <a href="javascript:alert('clicked')">You should<span class="not">n't</span> be able to click this or set focus to it.</em></a>.
+
+          <section id="innercontent2">
+            <h3>This inner section is <span class="inner-not">not</span> marked inert</h3>
+            <p><a href="javascript:alert('clicked')">Toggling the inner inert should not make this link become clickable or tabbable.</a></p>
+            <span role="link" tabindex="0">Toggling the inner inert should not make this fake link become tabbable or clickable either.</span>
+          </section>
+
+        </p>
+      </div>
+    </section>
+
+    <script src="dist/inert.js"></script>
+    <script>
+      var toggler = document.querySelector('#toggle');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+              document.querySelector('#content').inert = (evt.target.checked == true);
+          },
+          false);
+
+      toggler = document.querySelector('#toggle2');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#innercontent').inert = (evt.target.checked == true);
+          },
+          false);
+
+      toggler = document.querySelector('#toggle3');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#innercontent2').inert = (evt.target.checked == true);
+          },
+          false);
+
+      toggler = document.querySelector('#toggle4');
+      toggler.addEventListener(
+          'change',
+          function (evt) {
+            document.querySelector('#outercontent').inert = (evt.target.checked == true);
+          },
+          false);
+    </script>
+  </body>
+</html>
