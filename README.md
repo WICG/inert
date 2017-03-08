@@ -29,7 +29,7 @@ The `inert` attribute would allow web authors to mark parts of the DOM tree as [
 
 Furthermore, a node which is **inert** should also be hidden from assistive technology.
 
-Try out the [polyfill](#notes-on-the-polyfill), or look at the [demo page](https://wicg.github.io/inert/inert.html).
+Try out the [polyfill](#notes-on-the-polyfill), or look at the [demo page](https://wicg.github.io/inert/index.html).
 
 ## Background
 
@@ -211,7 +211,9 @@ implementers may get useful functionality into the hands of developers sooner wh
 The `dist` directory contains two versions of the polyfill. `inert.js` is the debug version, containing an inlined sourcemap, `inert.min.js` is
 the production version, minified to be as small as possible. These are both
 generated from the ES6 version of `inert.js` which lives in the root directory,
-and can be used if you don't need to worry about transpilation.
+and can be used if you don't need to worry about transpilation. There is also an
+[HTML Import](https://developer.mozilla.org/en-US/docs/Web/Web_Components/HTML_Imports)
+available in the root of the project at `inert.html`.
 
 The polyfill attempts to provide a reasonable fidelity polyfill for the `inert` attribute, however please note:
 
