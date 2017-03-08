@@ -142,7 +142,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         });
 
         var activeElement = document.activeElement;
-        if (!document.contains(startNode)) {
+        if (!document.body.contains(startNode)) {
           // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
           var node = startNode;
           var root = undefined;
