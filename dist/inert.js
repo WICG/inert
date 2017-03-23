@@ -204,6 +204,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             while (parent) {
               if (parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
                 addInertStyle(parent);
+                break;
               }
               parent = parent.parentNode;
             }

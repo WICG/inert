@@ -201,6 +201,7 @@
           while (parent) {
             if (parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
               addInertStyle(parent);
+              break;
             }
             parent = parent.parentNode;
           }
