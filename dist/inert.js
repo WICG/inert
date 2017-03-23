@@ -22,6 +22,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 (function (document) {
+  /** @type {boolean} */
+  var nativeShadowDOM = 'attachShadow' in Element.prototype;
 
   // https://dom.spec.whatwg.org/#dom-element-attachshadow
   /** @type {string} */
@@ -61,7 +63,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
       // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
-      var canAttachShadow = rootElement.attachShadow && rootElement.matches(acceptsShadowRootSelector) || rootElement.localName.indexOf('-') !== -1;
+      var canAttachShadow = nativeShadowDOM && rootElement.matches(acceptsShadowRootSelector) || rootElement.localName.indexOf('-') !== -1;
       if (!canAttachShadow) return;
 
       // Force shadowRoot.

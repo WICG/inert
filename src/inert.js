@@ -16,6 +16,8 @@
  */
 
 (function(document) {
+  /** @type {boolean} */
+  const nativeShadowDOM = ('attachShadow' in Element.prototype);
 
   // https://dom.spec.whatwg.org/#dom-element-attachshadow
   /** @type {string} */
@@ -71,7 +73,7 @@
       // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
       // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
-      const canAttachShadow = (rootElement.attachShadow &&
+      const canAttachShadow = (nativeShadowDOM &&
         rootElement.matches(acceptsShadowRootSelector) ||
         rootElement.localName.indexOf('-') !== -1);
       if (!canAttachShadow) return;
