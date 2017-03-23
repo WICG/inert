@@ -169,6 +169,21 @@ describe('Basic', function() {
         fixture.inert = true;
         expect(isUnfocusable(distributedButton)).to.equal(true);
       });
+
+      it('should allow to call attachShadow', function() {
+        fixture.inert = true;
+        const input = document.createElement('button');
+        fixture.attachShadow({mode:'open'}).appendChild(input);
+        expect(fixture.shadowRoot.querySelector('slot')).to.equal(null);
+        expect(input.parentNode).to.equal(fixture.shadowRoot);
+        expect(isUnfocusable(input)).to.equal(true);
+      });
+
+      it('should throw error when calling attachShadow twice', function() {
+        fixture.inert = true;
+        fixture.attachShadow({mode:'open'});
+        expect(() => fixture.attachShadow({mode:'open'})).to.throw();
+      });
     });
   });
 

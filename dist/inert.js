@@ -23,8 +23,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 (function (document) {
 
+  // https://dom.spec.whatwg.org/#dom-element-attachshadow
   /** @type {string} */
-  var acceptsShadowSel = ['article', 'aside', 'blockquote', 'body', 'div', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'main', 'nav', 'p', 'section', 'span'].join(',');
+  var acceptsShadowRootSelector = ['article', 'aside', 'blockquote', 'body', 'div', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'main', 'nav', 'p', 'section', 'span'].join(',');
 
   /**
    * `InertRoot` manages a single inert subtree, i.e. a ShadowDOM subtree whose root element has an `inert`
@@ -43,8 +44,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * @param {InertManager} inertManager The global singleton InertManager object.
      */
     function InertRoot(rootElement, inertManager) {
-      var _this = this;
-
       _classCallCheck(this, InertRoot);
 
       /** @type {Element} */
@@ -59,12 +58,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // Make it untabbable.
       rootElement.tabIndex = -1;
 
-      // We can attach a shadowRoot if element has potential custom element name
+      // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
+      // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
-      // or is a native element that accepts shadow roots
-      // https://dom.spec.whatwg.org/#dom-element-attachshadow
-      var canAttachShadow = rootElement.localName.indexOf('-') !== -1 || rootElement.matches(acceptsShadowSel);
-      if (!canAttachShadow) return;
+      if (!rootElement.attachShadow || rootElement.matches(acceptsShadowRootSelector) || rootElement.localName.indexOf('-') !== -1) return;
 
       // Force shadowRoot.
       if (!rootElement.shadowRoot) {
@@ -74,9 +71,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var nativeAttachShadow = rootElement.attachShadow;
         rootElement.attachShadow = function () {
           // Clear the slot we added.
-          _this.shadowRoot.removeChild(rootElement.shadowRoot.firstChild);
-          _this.attachShadow = nativeAttachShadow;
-          return _this.shadowRoot;
+          var slot = this.shadowRoot.querySelector('slot');
+          slot && this.shadowRoot.removeChild(slot);
+          this.attachShadow = nativeAttachShadow;
+          return this.shadowRoot;
         };
       } else {
         // Manager might have not "seen" these children since they're in a shadowRoot. 
@@ -142,7 +140,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * @param {Document} document
      */
     function InertManager(document) {
-      var _this2 = this;
+      var _this = this;
 
       _classCallCheck(this, InertManager);
 
@@ -172,7 +170,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       if (document.readyState === 'loading') {
         var onchanged = function onchanged() {
           document.removeEventListener('readystatechange', onchanged);
-          _this2._onDocumentLoaded();
+          _this._onDocumentLoaded();
         };
         document.addEventListener('readystatechange', onchanged);
       } else {

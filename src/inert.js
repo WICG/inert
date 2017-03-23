@@ -17,8 +17,9 @@
 
 (function(document) {
 
+  // https://dom.spec.whatwg.org/#dom-element-attachshadow
   /** @type {string} */
-  const acceptsShadowSel = [
+  const acceptsShadowRootSelector = [
     'article',
     'aside',
     'blockquote',
@@ -67,12 +68,12 @@
       // Make it untabbable.
       rootElement.tabIndex = -1;
 
-      // We can attach a shadowRoot if element has potential custom element name
+      // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
+      // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
-      // or is a native element that accepts shadow roots
-      // https://dom.spec.whatwg.org/#dom-element-attachshadow
-      const canAttachShadow = rootElement.localName.indexOf('-') !== -1 || rootElement.matches(acceptsShadowSel);
-      if (!canAttachShadow) return;
+      if (!rootElement.attachShadow ||
+        rootElement.matches(acceptsShadowRootSelector) ||
+        rootElement.localName.indexOf('-') !== -1) return;
 
       // Force shadowRoot.
       if (!rootElement.shadowRoot) {
@@ -80,9 +81,10 @@
           mode: 'open'
         }).appendChild(document.createElement('slot'));
         const nativeAttachShadow = rootElement.attachShadow;
-        rootElement.attachShadow = () => {
+        rootElement.attachShadow = function() {
           // Clear the slot we added.
-          this.shadowRoot.removeChild(rootElement.shadowRoot.firstChild);
+          let slot = this.shadowRoot.querySelector('slot');
+          slot && this.shadowRoot.removeChild(slot);
           this.attachShadow = nativeAttachShadow;
           return this.shadowRoot;
         };
