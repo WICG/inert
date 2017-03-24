@@ -210,11 +210,8 @@
         const inertRoot = new InertRoot(root, this);
         root.setAttribute('inert', '');
         this._inertRoots.set(root, inertRoot);
-        // Ensure inert styles are added in shadowRoots.
-        if (root.shadowRoot) {
-          addInertStyle(root.shadowRoot);
-        } else if (!this._document.body.contains(root)) {
-          // If not contained in the document, it must be in a shadowRoot.
+        // If not contained in the document, it must be in a shadowRoot.
+        if (!this._document.body.contains(root)) {
           let parent = root.parentNode;
           while (parent) {
             if (parent.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {

@@ -155,9 +155,10 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
-        shadowButton.focus();
         shadowButton.inert = true;
         expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+        shadowButton.inert = false;
+        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('auto');
       });
 
       it('should apply inside shadow trees distributed content', function() {
