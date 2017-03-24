@@ -70,6 +70,26 @@
       // Make it untabbable.
       rootElement.tabIndex = -1;
 
+      // Ensure we move the focus away from rootElement.
+      // This will blur also focused elements contained 
+      // in the rootElement's shadowRoot.
+      rootElement.blur();
+      // If rootElement has distributed content, it might
+      // be that the active element is contained into it.
+      // We must blur it.
+      if (rootElement.firstElementChild) {
+        let active = document.activeElement;
+        if (active === document.body) active = null;
+        while (active) {
+          if (rootElement.contains(active)) {
+            active.blur();
+            break;
+          }
+          // Keep searching in the shadowRoot.
+          active = active.shadowRoot ? active.shadowRoot.activeElement : null;
+        }
+      }
+
       // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
       // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
@@ -98,10 +118,6 @@
           inertManager.setInert(inertChildren[i], true);
         }
       }
-
-      // Ensure we move the focus outside of rootElement.
-      const active = rootElement.activeElement || document.activeElement;
-      if (active && rootElement.contains(active)) active.blur();
 
       // Give the manager visibility on changing nodes in the shadowRoot.
       this._observer = new MutationObserver(inertManager.watchForInert);
@@ -315,7 +331,12 @@
     value: function() {
       // If it is inert or into an inert node, no focus!
       let target = this;
-      while (!target.inert && (target = target.parentNode || target.host)) {}
+      while (target && !target.inert) {
+        // Target might be distributed, so go to the deepest assignedSlot
+        // and walk up the tree from there.
+        while (target.assignedSlot) target = target.assignedSlot;
+        target = target.parentNode || target.host;
+      }
       if (target && target.inert) return;
       return nativeFocus.value.call(this);
     }
