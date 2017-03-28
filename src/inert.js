@@ -106,7 +106,7 @@
         const nativeAttachShadow = rootElement.attachShadow;
         rootElement.attachShadow = function() {
           // Clear the slot we added.
-          let slot = this.shadowRoot.querySelector('slot');
+          const slot = this.shadowRoot.querySelector('slot');
           slot && this.shadowRoot.removeChild(slot);
           this.attachShadow = nativeAttachShadow;
           return this.shadowRoot;
@@ -227,15 +227,6 @@
         this._inertRoots.delete(root);
         root.removeAttribute('inert');
       }
-    }
-
-    /**
-     * Get the InertRoot object corresponding to the given inert root element, if any.
-     * @param {Element} element
-     * @return {InertRoot?}
-     */
-    getInertRoot(element) {
-      return this._inertRoots.get(element);
     }
 
     /**

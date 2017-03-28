@@ -233,18 +233,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
 
       /**
-       * Get the InertRoot object corresponding to the given inert root element, if any.
-       * @param {Element} element
-       * @return {InertRoot?}
-       */
-
-    }, {
-      key: 'getInertRoot',
-      value: function getInertRoot(element) {
-        return this._inertRoots.get(element);
-      }
-
-      /**
        * Callback used when document has finished loading.
        */
 
