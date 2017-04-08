@@ -1,8 +1,80 @@
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
+}(this, (function () { 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+/**
+ * Determine if a DOM element matches a CSS selector
+ *
+ * @param {Element} elem
+ * @param {String} selector
+ * @return {Boolean}
+ * @api public
+ */
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function matches(elem, selector) {
+  // Vendor-specific implementations of `Element.prototype.matches()`.
+  var proto = window.Element.prototype;
+  var nativeMatches = proto.matches ||
+      proto.mozMatchesSelector ||
+      proto.msMatchesSelector ||
+      proto.oMatchesSelector ||
+      proto.webkitMatchesSelector;
+
+  if (!elem || elem.nodeType !== 1) {
+    return false;
+  }
+
+  var parentElem = elem.parentNode;
+
+  // use native 'matches'
+  if (nativeMatches) {
+    return nativeMatches.call(elem, selector);
+  }
+
+  // native support for `matches` is missing and a fallback is required
+  var nodes = parentElem.querySelectorAll(selector);
+  var len = nodes.length;
+
+  for (var i = 0; i < len; i++) {
+    if (nodes[i] === elem) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Expose `matches`
+ */
+
+var index = matches;
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
 
 /**
  *
@@ -22,7 +94,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  */
 
 (function (document) {
-
   /** @type {string} */
   var _focusableElementsString = ['a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object', 'embed', '[contenteditable]'].join(',');
 
@@ -49,7 +120,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * @param {InertManager} inertManager The global singleton InertManager object.
      */
     function InertRoot(rootElement, inertManager) {
-      _classCallCheck(this, InertRoot);
+      classCallCheck(this, InertRoot);
 
       /** @type {InertManager} */
       this._inertManager = inertManager;
@@ -72,8 +143,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       // Watch for:
       // - any additions in the subtree: make them unfocusable too
       // - any removals from the subtree: remove them from this inert root's managed nodes
-      // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable element,
-      //   make that node a managed node.
+      // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable
+      //   element, make that node a managed node.
       this._observer = new MutationObserver(this._onMutation.bind(this));
       this._observer.observe(this._rootElement, { attributes: true, childList: true, subtree: true });
     }
@@ -84,7 +155,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      */
 
 
-    _createClass(InertRoot, [{
+    createClass(InertRoot, [{
       key: 'destructor',
       value: function destructor() {
         this._observer.disconnect();
@@ -167,11 +238,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _visitNode(node) {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
 
-        // If a descendant inert root becomes un-inert, its descendants will still be inert because of this
-        // inert root, so all of its managed nodes need to be adopted by this InertRoot.
+        // If a descendant inert root becomes un-inert, its descendants will still be inert because of
+        // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
         if (node !== this._rootElement && node.hasAttribute('inert')) this._adoptInertRoot(node);
 
-        if (node.matches(_focusableElementsString) || node.hasAttribute('tabindex')) this._manageNode(node);
+        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) this._manageNode(node);
       }
 
       /**
@@ -378,11 +449,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
     }, {
       key: 'managedNodes',
-      get: function get() {
+      get: function get$$1() {
         return new Set(this._managedNodes);
       }
     }]);
-
     return InertRoot;
   }();
 
@@ -408,7 +478,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * @param {InertRoot} inertRoot The inert root element associated with this inert node.
      */
     function InertNode(node, inertRoot) {
-      _classCallCheck(this, InertNode);
+      classCallCheck(this, InertNode);
 
       /** @type {Node} */
       this._node = node;
@@ -435,7 +505,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      */
 
 
-    _createClass(InertNode, [{
+    createClass(InertNode, [{
       key: 'destructor',
       value: function destructor() {
         this._throwIfDestroyed();
@@ -459,8 +529,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     }, {
       key: '_throwIfDestroyed',
+
+
+      /**
+       * Throw if user tries to access destroyed InertNode.
+       */
       value: function _throwIfDestroyed() {
-        if (this.destroyed) throw new Error("Trying to access destroyed InertNode");
+        if (this.destroyed) throw new Error('Trying to access destroyed InertNode');
       }
 
       /** @return {boolean} */
@@ -472,7 +547,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       /** Save the existing tabindex value and make the node untabbable and unfocusable */
       value: function ensureUntabbable() {
         var node = this.node;
-        if (node.matches(_focusableElementsString)) {
+        if (index(node, _focusableElementsString)) {
           if (node.tabIndex === -1 && this.hasSavedTabIndex) return;
 
           if (node.hasAttribute('tabindex')) this._savedTabIndex = node.tabIndex;
@@ -515,12 +590,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
     }, {
       key: 'destroyed',
-      get: function get() {
+      get: function get$$1() {
         return this._destroyed;
       }
     }, {
       key: 'hasSavedTabIndex',
-      get: function get() {
+      get: function get$$1() {
         return '_savedTabIndex' in this;
       }
 
@@ -528,7 +603,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     }, {
       key: 'node',
-      get: function get() {
+      get: function get$$1() {
         this._throwIfDestroyed();
         return this._node;
       }
@@ -537,19 +612,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     }, {
       key: 'savedTabIndex',
-      set: function set(tabIndex) {
+      set: function set$$1(tabIndex) {
         this._throwIfDestroyed();
         this._savedTabIndex = tabIndex;
       }
 
       /** @return {number} */
       ,
-      get: function get() {
+      get: function get$$1() {
         this._throwIfDestroyed();
         return this._savedTabIndex;
       }
     }]);
-
     return InertNode;
   }();
 
@@ -569,7 +643,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      * @param {Document} document
      */
     function InertManager(document) {
-      _classCallCheck(this, InertManager);
+      classCallCheck(this, InertManager);
 
       if (!document) throw new Error('Missing required argument; InertManager needs to wrap a document.');
 
@@ -612,7 +686,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
      */
 
 
-    _createClass(InertManager, [{
+    createClass(InertManager, [{
       key: 'setInert',
       value: function setInert(root, inert) {
         if (inert) {
@@ -771,7 +845,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                     if (node.nodeType !== Node.ELEMENT_NODE) continue;
                     var inertElements = Array.from(node.querySelectorAll('[inert]'));
-                    if (node.matches('[inert]')) inertElements.unshift(node);
+                    if (index(node, '[inert]')) inertElements.unshift(node);
                     var _iteratorNormalCompletion10 = true;
                     var _didIteratorError10 = false;
                     var _iteratorError10 = undefined;
@@ -837,7 +911,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
       }
     }]);
-
     return InertManager;
   }();
 
@@ -911,7 +984,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }
     var style = document.createElement('style');
     style.setAttribute('id', 'inert-style');
-    style.textContent = "\n" + "[inert] {\n" + "  pointer-events: none;\n" + "  cursor: default;\n" + "}\n" + "\n" + "[inert], [inert] * {\n" + "  user-select: none;\n" + "  -webkit-user-select: none;\n" + "  -moz-user-select: none;\n" + "  -ms-user-select: none;\n" + "}\n";
+    style.textContent = '\n' + '[inert] {\n' + '  pointer-events: none;\n' + '  cursor: default;\n' + '}\n' + '\n' + '[inert], [inert] * {\n' + '  user-select: none;\n' + '  -webkit-user-select: none;\n' + '  -moz-user-select: none;\n' + '  -ms-user-select: none;\n' + '}\n';
     node.appendChild(style);
   }
 
@@ -919,11 +992,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   Object.defineProperty(Element.prototype, 'inert', {
     enumerable: true,
-    get: function get() {
+    get: function get$$1() {
       return this.hasAttribute('inert');
     },
-    set: function set(inert) {
+    set: function set$$1(inert) {
       inertManager.setInert(this, inert);
     }
   });
 })(document);
+
+})));
