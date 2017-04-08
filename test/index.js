@@ -101,7 +101,7 @@ describe('Basic', function() {
       newButton.textContent = 'Click me too';
       const inertContainer = document.querySelector('[inert]');
       inertContainer.appendChild(newButton);
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
+      // Wait for the next microtask to allow mutation observers to react to the DOM change.
       Promise.resolve().then(() => {
         expect(isUnfocusable(newButton)).to.equal(true);
         done();
@@ -115,7 +115,7 @@ describe('Basic', function() {
       expect(temp.parentElement).to.eql(fixture);
       temp.outerHTML = '<div id="inert2" inert><button>Click me</button></div>';
       const div = fixture.querySelector('#inert2');
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
+      // Wait for the next microtask to allow mutation observers to react to the DOM change.
       Promise.resolve().then(() => {
         expect(div.inert).to.equal(true);
         const button = div.querySelector('button');
@@ -150,6 +150,34 @@ describe('Basic', function() {
         shadowButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(shadowButton)).to.equal(true);
+      });
+
+      it('should apply to elements added to shadow trees later in time', function(done) {
+        host.inert = true;
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
+      });
+
+      it('should apply to elements that create shadow tree later in time', function(done) {
+        fixture.removeChild(host);
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.inert = true;
+        const shadowRoot = host.createShadowRoot();
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        shadowRoot.appendChild(shadowButton);
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
       });
 
       it('should apply inert styles inside shadow trees', function() {
@@ -200,6 +228,36 @@ describe('Basic', function() {
         shadowButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(shadowButton)).to.equal(true);
+      });
+
+      it('should apply to elements added to shadow trees later in time', function(done) {
+        host.inert = true;
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
+      });
+
+      it('should apply to elements that create shadow tree later in time', function(done) {
+        fixture.removeChild(host);
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.inert = true;
+        const shadowRoot = host.attachShadow({
+          mode: 'open'
+        });
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        shadowRoot.appendChild(shadowButton);
+        // Wait for the next microtask to allow mutation observers to react to the DOM change.
+        Promise.resolve().then(() => {
+          expect(isUnfocusable(shadowButton)).to.equal(true);
+          done();
+        });
       });
 
       it('should apply inert styles inside shadow trees', function() {
