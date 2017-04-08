@@ -142,7 +142,7 @@ class InertRoot {
     if (node !== this._rootElement && node.hasAttribute('inert'))
       this._adoptInertRoot(node);
 
-    if (node.matches(_focusableElementsString) || node.hasAttribute('tabindex'))
+            if (matchSelector(node, _focusableElementsString) || node.hasAttribute('tabindex'))
       this._manageNode(node);
   }
 
@@ -329,7 +329,7 @@ class InertNode {
   /** Save the existing tabindex value and make the node untabbable and unfocusable */
   ensureUntabbable() {
     const node = this.node;
-    if (node.matches(_focusableElementsString)) {
+            if (matchSelector(node, _focusableElementsString)) {
       if (node.tabIndex === -1 && this.hasSavedTabIndex)
         return;
 
@@ -533,7 +533,7 @@ class InertManager {
           if (node.nodeType !== Node.ELEMENT_NODE)
             continue;
           const inertElements = Array.from(node.querySelectorAll('[inert]'));
-          if (node.matches('[inert]'))
+                            if (matchSelector(node, '[inert]'))
             inertElements.unshift(node);
           for (let inertElement of inertElements)
             this.setInert(inertElement, true);
@@ -550,6 +550,12 @@ class InertManager {
     }
   }
 }
+
+
+    function matchSelector(node, selector) {
+        let func = node.matches || node.msMatchesSelector;
+        return func.call(node,selector);
+    }
 
  /**
   * Recursively walk the composed tree from |node|.
