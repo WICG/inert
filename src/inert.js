@@ -110,9 +110,7 @@ class InertRoot {
    * @param {Node} startNode
    */
   _makeSubtreeUnfocusable(startNode) {
-    composedTreeWalk(startNode, (node) => {
-      this._visitNode(node);
-    });
+    composedTreeWalk(startNode, (node) => this._visitNode(node));
 
     let activeElement = document.activeElement;
     if (!document.body.contains(startNode)) {
@@ -173,9 +171,7 @@ class InertRoot {
    * @param {Node} startNode
    */
   _unmanageSubtree(startNode) {
-    composedTreeWalk(startNode, (node) => {
-      this._unmanageNode(node);
-    });
+    composedTreeWalk(startNode, (node) => this._unmanageNode(node));
   }
 
   /**
