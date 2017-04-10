@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-(function(document) {
+import matches from 'dom-matches';
 
+(function(document) {
 /** @type {string} */
 const _focusableElementsString = ['a[href]',
                                   'area[href]',
@@ -72,10 +73,10 @@ class InertRoot {
     // Watch for:
     // - any additions in the subtree: make them unfocusable too
     // - any removals from the subtree: remove them from this inert root's managed nodes
-    // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable element,
-    //   make that node a managed node.
+    // - attribute changes: if `tabindex` is added, or removed from an intrinsically focusable
+    //   element, make that node a managed node.
     this._observer = new MutationObserver(this._onMutation.bind(this));
-    this._observer.observe(this._rootElement, { attributes: true, childList: true, subtree: true });
+    this._observer.observe(this._rootElement, {attributes: true, childList: true, subtree: true});
   }
 
   /**
@@ -109,7 +110,7 @@ class InertRoot {
    * @param {Node} startNode
    */
   _makeSubtreeUnfocusable(startNode) {
-    composedTreeWalk(startNode, (node) => { this._visitNode(node); });
+    composedTreeWalk(startNode, (node) => this._visitNode(node));
 
     let activeElement = document.activeElement;
     if (!document.body.contains(startNode)) {
@@ -124,7 +125,7 @@ class InertRoot {
         node = node.parentNode;
       }
       if (root)
-        activeElement = root.activeElement
+        activeElement = root.activeElement;
     }
     if (startNode.contains(activeElement))
       activeElement.blur();
@@ -137,12 +138,12 @@ class InertRoot {
     if (node.nodeType !== Node.ELEMENT_NODE)
       return;
 
-    // If a descendant inert root becomes un-inert, its descendants will still be inert because of this
-    // inert root, so all of its managed nodes need to be adopted by this InertRoot.
+    // If a descendant inert root becomes un-inert, its descendants will still be inert because of
+    // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
     if (node !== this._rootElement && node.hasAttribute('inert'))
       this._adoptInertRoot(node);
 
-    if (node.matches(_focusableElementsString) || node.hasAttribute('tabindex'))
+    if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex'))
       this._manageNode(node);
   }
 
@@ -170,7 +171,7 @@ class InertRoot {
    * @param {Node} startNode
    */
   _unmanageSubtree(startNode) {
-    composedTreeWalk(startNode, (node) => { this._unmanageNode(node); });
+    composedTreeWalk(startNode, (node) => this._unmanageNode(node));
   }
 
   /**
@@ -298,9 +299,12 @@ class InertNode {
     return this._destroyed;
   }
 
+  /**
+   * Throw if user tries to access destroyed InertNode.
+   */
   _throwIfDestroyed() {
     if (this.destroyed)
-      throw new Error("Trying to access destroyed InertNode");
+      throw new Error('Trying to access destroyed InertNode');
   }
 
   /** @return {boolean} */
@@ -329,7 +333,7 @@ class InertNode {
   /** Save the existing tabindex value and make the node untabbable and unfocusable */
   ensureUntabbable() {
     const node = this.node;
-    if (node.matches(_focusableElementsString)) {
+    if (matches(node, _focusableElementsString)) {
       if (node.tabIndex === -1 && this.hasSavedTabIndex)
         return;
 
@@ -517,7 +521,7 @@ class InertManager {
       this.setInert(inertElement, true);
 
     // Comment this out to use programmatic API only.
-    this._observer.observe(this._document.body, { attributes: true, subtree: true, childList: true });
+    this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
   }
 
   /**
@@ -533,7 +537,7 @@ class InertManager {
           if (node.nodeType !== Node.ELEMENT_NODE)
             continue;
           const inertElements = Array.from(node.querySelectorAll('[inert]'));
-          if (node.matches('[inert]'))
+          if (matches(node, '[inert]'))
             inertElements.unshift(node);
           for (let inertElement of inertElements)
             this.setInert(inertElement, true);
@@ -562,7 +566,7 @@ function composedTreeWalk(node, callback, shadowRootAncestor) {
   if (node.nodeType == Node.ELEMENT_NODE) {
     const element = /** @type {Element} */ (node);
     if (callback)
-      callback(element)
+      callback(element);
 
     // Descend into node:
     // If it has a ShadowRoot, ignore all child elements - these will be picked
@@ -595,7 +599,7 @@ function composedTreeWalk(node, callback, shadowRootAncestor) {
       const slot = /** @type {HTMLSlotElement} */ (element);
       // Verify if ShadowDom v1 is supported.
       const distributedNodes = slot.assignedNodes ?
-        slot.assignedNodes({ flatten: true }) : [];
+        slot.assignedNodes({flatten: true}) : [];
       for (let i = 0; i < distributedNodes.length; i++) {
         composedTreeWalk(distributedNodes[i], callback, shadowRootAncestor);
       }
@@ -622,18 +626,18 @@ function addInertStyle(node) {
   }
   const style = document.createElement('style');
   style.setAttribute('id', 'inert-style');
-  style.textContent = "\n"+
-                      "[inert] {\n" +
-                      "  pointer-events: none;\n" +
-                      "  cursor: default;\n" +
-                      "}\n" +
-                      "\n" +
-                      "[inert], [inert] * {\n" +
-                      "  user-select: none;\n" +
-                      "  -webkit-user-select: none;\n" +
-                      "  -moz-user-select: none;\n" +
-                      "  -ms-user-select: none;\n" +
-                      "}\n";
+  style.textContent = '\n'+
+                      '[inert] {\n' +
+                      '  pointer-events: none;\n' +
+                      '  cursor: default;\n' +
+                      '}\n' +
+                      '\n' +
+                      '[inert], [inert] * {\n' +
+                      '  user-select: none;\n' +
+                      '  -webkit-user-select: none;\n' +
+                      '  -moz-user-select: none;\n' +
+                      '  -ms-user-select: none;\n' +
+                      '}\n';
   node.appendChild(style);
 }
 
@@ -641,8 +645,11 @@ const inertManager = new InertManager(document);
 
 Object.defineProperty(Element.prototype, 'inert', {
                         enumerable: true,
-                        get: function() { return this.hasAttribute('inert'); },
-                        set: function(inert) { inertManager.setInert(this, inert) }
+                        get: function() {
+                          return this.hasAttribute('inert');
+                        },
+                        set: function(inert) {
+                          inertManager.setInert(this, inert);
+                        },
                       });
-
 })(document);
