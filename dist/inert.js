@@ -209,7 +209,7 @@ var createClass = function () {
         var _this = this;
 
         composedTreeWalk(startNode, function (node) {
-          _this._visitNode(node);
+          return _this._visitNode(node);
         });
 
         var activeElement = document.activeElement;
@@ -280,7 +280,7 @@ var createClass = function () {
         var _this2 = this;
 
         composedTreeWalk(startNode, function (node) {
-          _this2._unmanageNode(node);
+          return _this2._unmanageNode(node);
         });
       }
 
