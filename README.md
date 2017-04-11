@@ -208,11 +208,8 @@ implementers may get useful functionality into the hands of developers sooner wh
 
 ## Notes on the polyfill
 
-The `dist` directory contains two versions of the polyfill. `inert.js` is the debug version, containing an inlined sourcemap, `inert.min.js` is
-the production version, minified to be as small as possible. These are both
-generated from the ES6 version of `inert.js` which lives in the root directory,
-and can be used if you don't need to worry about transpilation. There is also an
-[HTML Import](https://developer.mozilla.org/en-US/docs/Web/Web_Components/HTML_Imports)
+The `dist` directory contains a transpiled, UMD build of `inert.js` generated from the ES6 source.
+There is also an [HTML Import](https://developer.mozilla.org/en-US/docs/Web/Web_Components/HTML_Imports)
 available in the root of the project at `inert.html`.
 
 The polyfill attempts to provide a reasonable fidelity polyfill for the `inert` attribute, however please note:
