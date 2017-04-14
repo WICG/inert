@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import matches from 'dom-matches';
+
 (function(document) {
   /** @type {boolean} */
   const nativeShadowDOM = ('attachShadow' in Element.prototype);
@@ -43,7 +45,7 @@
   ].join(',');
 
   /**
-   * `InertRoot` manages a single inert subtree, i.e. a ShadowDOM subtree whose root element has an `inert`
+   * `InertRoot` manages a single inert subtree, i.e. a DOM subtree whose root element has an `inert`
    * attribute.
    *
    * Its main functions are:

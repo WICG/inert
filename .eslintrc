@@ -1,0 +1,17 @@
+{
+  "env": {
+    "browser": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "extends": "google",
+  "rules": {
+    "no-var": "off",
+    "max-len": [2, {
+      "code": 100,
+      "tabWidth": 2,
+      "ignoreUrls": true
+    }]
+  }
+}

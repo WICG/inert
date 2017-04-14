@@ -1,10 +1,14 @@
 {
   "name": "wicg-inert",
-  "version": "1.1.1",
+  "version": "1.1.3",
   "description": "A polyfill for the proposed inert API",
   "main": "dist/inert.js",
   "scripts": {
-    "test": "gulp && easy-sauce"
+    "lint": "eslint src/*.js",
+    "test": "npm run lint && npm run build && easy-sauce",
+    "build": "rollem",
+    "dev": "rollem --watch",
+    "prepublish": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -26,22 +30,29 @@
     "url": "https://github.com/WICG/inert/issues"
   },
   "homepage": "https://github.com/WICG/inert#readme",
+  "dependencies": {
+    "dom-matches": "^2.0.0"
+  },
   "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-polyfill": "^6.13.0",
     "babel-preset-es2015": "^6.13.2",
     "chai": "^3.5.0",
     "del": "^2.2.2",
     "easy-sauce": "^0.4.1",
-    "gulp": "gulpjs/gulp#4.0",
-    "gulp-babel": "^6.1.2",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^2.2.0",
-    "gulp-uglify": "^2.0.0",
+    "eslint": "^3.13.1",
+    "eslint-config-google": "^0.7.1",
     "mocha": "^3.1.2",
+    "rollem": "^1.11.0",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.1",
+    "rollup-watch": "^3.2.2",
     "whatwg-fetch": "^1.0.0"
   },
   "easySauce": {
-    "service": "sauce-connect",
     "username": "robdodson_inert",
     "key": "a844aee9-d3ec-4566-94e3-dba3d0c30248",
     "testPath": "/test/",

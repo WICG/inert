@@ -16,7 +16,9 @@
  */
 
 const expect = chai.expect;
-const fixture = new Fixture();
+const fixtureLoader = new Fixture();
+
+/* eslint-disable require-jsdoc */
 
 function isUnfocusable(el) {
   var oldActiveElement = document.activeElement;
@@ -29,7 +31,7 @@ function isUnfocusable(el) {
 }
 
 describe('Basic', function() {
-
+  /* eslint-disable no-invalid-this */
   this.timeout(10000);
 
   describe('Element.prototype', function() {
@@ -39,12 +41,12 @@ describe('Basic', function() {
   });
 
   describe('children of declaratively inert parent', function() {
-    beforeEach(function(done) {
-      fixture.load('fixtures/basic.html', done);
+    beforeEach(function() {
+      return fixtureLoader.load('fixtures/basic.html');
     });
 
     afterEach(function() {
-      fixture.destroy();
+      fixtureLoader.destroy();
     });
 
     it('should have no effect on elements outside inert region', function() {
@@ -62,7 +64,8 @@ describe('Basic', function() {
       expect(isUnfocusable(div)).to.equal(true);
     });
 
-    it('programmatically setting inert to false should remove attribute and un-inert content', function() {
+    it('programmatically setting inert to false should remove attribute and un-inert content',
+      function() {
       const inertContainer = document.querySelector('[inert]');
       expect(inertContainer.hasAttribute('inert')).to.equal(true);
       expect(inertContainer.inert).to.equal(true);
@@ -126,7 +129,9 @@ describe('Basic', function() {
         console.log('ShadowDOM v1 is not supported by the browser.');
         return;
       }
-      let fixture, host;
+
+      let fixture;
+      let host;
 
       beforeEach(function() {
         fixture = document.querySelector('#fixture');
@@ -134,12 +139,8 @@ describe('Basic', function() {
         host = document.createElement('div');
         fixture.appendChild(host);
         host.attachShadow({
-          mode: 'open'
+          mode: 'open',
         });
-      });
-
-      afterEach(function() {
-        fixture.removeChild(host);
       });
 
       it('should apply inside shadow trees', function() {
@@ -189,19 +190,19 @@ describe('Basic', function() {
   });
 
   describe('nested inert regions', function() {
-    beforeEach(function(done) {
-      fixture.load('fixtures/nested.html', done);
+    beforeEach(function() {
+      return fixtureLoader.load('fixtures/nested.html');
     });
 
     afterEach(function() {
-      fixture.destroy();
+      fixtureLoader.destroy();
     });
 
     it('should apply regardless of how many deep the nesting is', function() {
       const outerButton = document.querySelector('#outer-button');
       expect(isUnfocusable(outerButton)).to.equal(true);
       const outerFakeButton = document.querySelector('#outer-fake-button');
-      expect(isUnfocusable(outerButton)).to.equal(true);
+      expect(isUnfocusable(outerFakeButton)).to.equal(true);
 
       const innerButton = document.querySelector('#inner-button');
       expect(isUnfocusable(innerButton)).to.equal(true);
@@ -215,7 +216,7 @@ describe('Basic', function() {
       const outerButton = document.querySelector('#outer-button');
       expect(isUnfocusable(outerButton)).to.equal(true);
       const outerFakeButton = document.querySelector('#outer-fake-button');
-      expect(isUnfocusable(outerButton)).to.equal(true);
+      expect(isUnfocusable(outerFakeButton)).to.equal(true);
 
       const innerButton = document.querySelector('#inner-button');
       expect(isUnfocusable(innerButton)).to.equal(true);
@@ -229,7 +230,7 @@ describe('Basic', function() {
       const outerButton = document.querySelector('#outer-button');
       expect(isUnfocusable(outerButton)).to.equal(false);
       const outerFakeButton = document.querySelector('#outer-fake-button');
-      expect(isUnfocusable(outerButton)).to.equal(false);
+      expect(isUnfocusable(outerFakeButton)).to.equal(false);
 
       const innerButton = document.querySelector('#inner-button');
       expect(isUnfocusable(innerButton)).to.equal(true);
@@ -259,12 +260,12 @@ describe('Basic', function() {
   });
 
   describe('reapply existing tabindex', function() {
-    beforeEach(function(done) {
-      fixture.load('fixtures/tabindex.html', done);
+    beforeEach(function() {
+      return fixtureLoader.load('fixtures/tabindex.html');
     });
 
     afterEach(function() {
-      fixture.destroy();
+      fixtureLoader.destroy();
     });
 
     it('should reinstate pre-existing tabindex on setting inert=false', function() {
@@ -287,7 +288,7 @@ describe('Basic', function() {
         expect(isUnfocusable(focusableEl)).to.equal(false);
 
       for (let el of Array.from(container.children)) {
-        let tabindex = tabindexes.get(el)
+        let tabindex = tabindexes.get(el);
         if (tabindex) {
           expect(el.hasAttribute('tabindex')).to.equal(true);
           expect(el.getAttribute('tabindex')).to.equal(tabindexes.get(el));
@@ -295,7 +296,6 @@ describe('Basic', function() {
           expect(el.hasAttribute('tabindex')).to.equal(false);
         }
       }
-
     });
   });
 });
