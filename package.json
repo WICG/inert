@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint src/*.js",
     "test": "npm run lint && npm run build && easy-sauce",
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
+    "build": "rollem",
+    "dev": "rollem --watch",
     "prepublish": "npm run test && npm run build"
   },
   "repository": {
@@ -43,10 +43,12 @@
     "eslint": "^3.13.1",
     "eslint-config-google": "^0.7.1",
     "mocha": "^3.1.2",
+    "rollem": "^1.11.0",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^3.2.2",
     "whatwg-fetch": "^1.0.0"
   },
