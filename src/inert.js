@@ -41,12 +41,12 @@ import matches from 'dom-matches';
     'nav',
     'p',
     'section',
-    'span'
+    'span',
   ].join(',');
 
   /**
-   * `InertRoot` manages a single inert subtree, i.e. a DOM subtree whose root element has an `inert`
-   * attribute.
+   * `InertRoot` manages a single inert subtree, i.e. a DOM subtree whose root element
+   * has an `inert` attribute.
    *
    * Its main functions are:
    *
@@ -73,7 +73,7 @@ import matches from 'dom-matches';
       rootElement.tabIndex = -1;
 
       // Ensure we move the focus away from rootElement.
-      // This will blur also focused elements contained 
+      // This will blur also focused elements contained
       // in the rootElement's shadowRoot.
       rootElement.blur();
       // If rootElement has distributed content, it might
@@ -96,14 +96,14 @@ import matches from 'dom-matches';
       // or if element has potential custom element name.
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
       const canAttachShadow = (nativeShadowDOM &&
-        rootElement.matches(acceptsShadowRootSelector) ||
+        matches(rootElement, acceptsShadowRootSelector) ||
         rootElement.localName.indexOf('-') !== -1);
       if (!canAttachShadow) return;
 
       // Force shadowRoot.
       if (!rootElement.shadowRoot) {
         rootElement.attachShadow({
-          mode: 'open'
+          mode: 'open',
         }).appendChild(document.createElement('slot'));
         const nativeAttachShadow = rootElement.attachShadow;
         rootElement.attachShadow = function() {
@@ -114,7 +114,7 @@ import matches from 'dom-matches';
           return this.shadowRoot;
         };
       } else {
-        // Manager might have not "seen" these children since they're in a shadowRoot. 
+        // Manager might have not "seen" these children since they're in a shadowRoot.
         const inertChildren = rootElement.shadowRoot.querySelectorAll('[inert]');
         for (let i = 0, l = inertChildren.length; i < l; i++) {
           inertManager.setInert(inertChildren[i], true);
@@ -126,7 +126,7 @@ import matches from 'dom-matches';
       this._observer.observe(rootElement.shadowRoot, {
         attributes: true,
         subtree: true,
-        childList: true
+        childList: true,
       });
     }
 
@@ -156,8 +156,8 @@ import matches from 'dom-matches';
    * When an element becomes an inert root by having an `inert` attribute set and/or its `inert`
    * property set to `true`, the `setInert` method creates an `InertRoot` object for the element.
    * The `InertRoot` in turn registers itself as managing all of the element's focusable descendant
-   * nodes via the `register()` method. The `InertManager` ensures that a single `InertNode` instance
-   * is created for each such node, via the `_managedNodes` map.
+   * nodes via the `register()` method. The `InertManager` ensures that a single `InertNode`
+   * instance is created for each such node, via the `_managedNodes` map.
    */
   class InertManager {
     /**
@@ -244,7 +244,7 @@ import matches from 'dom-matches';
       this._observer.observe(this._document.body, {
         attributes: true,
         subtree: true,
-        childList: true
+        childList: true,
       });
     }
 
@@ -261,7 +261,7 @@ import matches from 'dom-matches';
               if (node.nodeType !== Node.ELEMENT_NODE)
                 continue;
               const inertElements = Array.from(node.querySelectorAll('[inert]'));
-              if (node.matches('[inert]'))
+              if (matches(node, '[inert]'))
                 inertElements.unshift(node);
               for (let inertElement of inertElements)
                 this.setInert(inertElement, true);
@@ -289,15 +289,15 @@ import matches from 'dom-matches';
     }
     const style = document.createElement('style');
     style.setAttribute('id', 'inert-style');
-    style.textContent = "\n" +
-      "[inert], [inert] * {\n" +
-      "  pointer-events: none;\n" +
-      "  cursor: default;\n" +
-      "  user-select: none;\n" +
-      "  -webkit-user-select: none;\n" +
-      "  -moz-user-select: none;\n" +
-      "  -ms-user-select: none;\n" +
-      "}\n";
+    style.textContent = `
+    [inert], [inert] * {
+      pointer-events: none;
+      cursor: default;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }`;
     node.appendChild(style);
   }
 
@@ -309,8 +309,8 @@ import matches from 'dom-matches';
       return this.hasAttribute('inert');
     },
     set: function(inert) {
-      inertManager.setInert(this, inert)
-    }
+      inertManager.setInert(this, inert);
+    },
   });
 
   const nativeFocus = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'focus');
@@ -329,7 +329,6 @@ import matches from 'dom-matches';
       }
       if (target && target.inert) return;
       return nativeFocus.value.call(this);
-    }
+    },
   });
-
 })(document);
