@@ -313,22 +313,17 @@ import matches from 'dom-matches';
     },
   });
 
-  const nativeFocus = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'focus');
-  Object.defineProperty(HTMLElement.prototype, 'focus', {
-    enumerable: true,
-    configurable: true,
-    writable: true,
-    value: function() {
-      // If it is inert or into an inert node, no focus!
-      let target = this;
-      while (target && !target.inert) {
-        // Target might be distributed, so go to the deepest assignedSlot
-        // and walk up the tree from there.
-        while (target.assignedSlot) target = target.assignedSlot;
-        target = target.parentNode || target.host;
-      }
-      if (target && target.inert) return;
-      return nativeFocus.value.call(this);
-    },
-  });
+  const nativeFocus = HTMLElement.prototype.focus;
+  HTMLElement.prototype.focus = function() {
+    // If it is inert or into an inert node, no focus!
+    let target = this;
+    while (target && !target.inert) {
+      // Target might be distributed, so go to the deepest assignedSlot
+      // and walk up the tree from there.
+      while (target.assignedSlot) target = target.assignedSlot;
+      target = target.parentNode || target.host;
+    }
+    if (target && target.inert) return;
+    return nativeFocus.call(this);
+  };
 })(document);
