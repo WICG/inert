@@ -186,6 +186,14 @@ describe('Basic', function() {
         fixture.attachShadow({mode:'open'});
         expect(() => fixture.attachShadow({mode:'open'})).to.throw();
       });
+
+      it('handles closed shadowRoots', function() {
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.attachShadow({mode: 'closed'});
+        host.inert = true;
+        expect(isUnfocusable(host)).to.equal(true);
+      });
     });
   });
 

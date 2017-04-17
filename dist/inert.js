@@ -114,10 +114,10 @@ var createClass = function () {
 
   var InertRoot = function () {
     /**
-     * @param {Element} rootElement The Element at the root of the inert subtree.
-     * @param {InertManager} inertManager The global singleton InertManager object.
+     * @param {!Element} rootElement The Element at the root of the inert subtree.
+     * @param {Function} onShadowRootMutation Callback invoked on shadow root mutations.
      */
-    function InertRoot(rootElement, inertManager) {
+    function InertRoot(rootElement, onShadowRootMutation) {
       classCallCheck(this, InertRoot);
 
       /** @type {Element} */
@@ -152,40 +152,52 @@ var createClass = function () {
         }
       }
 
-      // We can attach a shadowRoot if supported, is a native element that accepts shadowRoot
-      // or if element has potential custom element name.
+      if (!nativeShadowDOM) return;
+      // If element doesn't accept shadowRoot, check if it is a potential custom element
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
-      var canAttachShadow = nativeShadowDOM && index(rootElement, acceptsShadowRootSelector) || rootElement.localName.indexOf('-') !== -1;
-      if (!canAttachShadow) return;
+      if (!index(rootElement, acceptsShadowRootSelector)) {
+        var potentialCustomElement = rootElement.tagName.indexOf('-') !== -1;
+        if (!potentialCustomElement) return;
+      }
+      // We already failed inerting this shadow root.
+      if (rootElement.__failedAttachShadow) return;
 
       // Force shadowRoot.
       if (!rootElement.shadowRoot) {
-        rootElement.attachShadow({
-          mode: 'open'
-        }).appendChild(document.createElement('slot'));
-        var nativeAttachShadow = rootElement.attachShadow;
-        rootElement.attachShadow = function () {
-          // Clear the slot we added.
-          var slot = this.shadowRoot.querySelector('slot');
-          slot && this.shadowRoot.removeChild(slot);
-          this.attachShadow = nativeAttachShadow;
-          return this.shadowRoot;
-        };
+        // Detect if this is a closed shadowRoot with try/catch (sigh).
+        try {
+          rootElement.attachShadow({
+            mode: 'open'
+          }).appendChild(document.createElement('slot'));
+          // NOTE: we allow attachShadow to be called again since we're using it
+          // for polyfilling inert. We ensure the shadowRoot is empty and return it.
+          rootElement.attachShadow = function () {
+            var slot = this.shadowRoot.querySelector('slot');
+            slot && this.shadowRoot.removeChild(slot);
+            delete this.attachShadow;
+            return this.shadowRoot;
+          };
+        } catch (e) {
+          rootElement.__failedAttachShadow = true;
+          console.warn('Could not inert element shadowRoot', rootElement, e);
+          return;
+        }
       } else {
-        // Manager might have not "seen" these children since they're in a shadowRoot.
+        // Ensure inerted elements in the shadowRoot have the property updated.
         var inertChildren = rootElement.shadowRoot.querySelectorAll('[inert]');
         for (var i = 0, l = inertChildren.length; i < l; i++) {
-          inertManager.setInert(inertChildren[i], true);
+          inertChildren[i].inert = true;
         }
       }
-
-      // Give the manager visibility on changing nodes in the shadowRoot.
-      this._observer = new MutationObserver(inertManager.watchForInert);
-      this._observer.observe(rootElement.shadowRoot, {
-        attributes: true,
-        subtree: true,
-        childList: true
-      });
+      if (typeof onShadowRootMutation === 'function') {
+        // Give visibility on changing nodes in the shadowRoot.
+        this._observer = new MutationObserver(onShadowRootMutation);
+        this._observer.observe(rootElement.shadowRoot, {
+          attributes: true,
+          subtree: true,
+          childList: true
+        });
+      }
     }
 
     /**
@@ -281,7 +293,7 @@ var createClass = function () {
         if (this._inertRoots.has(root) === inert) // element is already inert
           return;
         if (inert) {
-          var inertRoot = new InertRoot(root, this);
+          var inertRoot = new InertRoot(root, this.watchForInert);
           root.setAttribute('inert', '');
           this._inertRoots.set(root, inertRoot);
           // If not contained in the document, it must be in a shadowRoot.
