@@ -27,8 +27,6 @@ function isUnfocusable(el) {
     return false;
   if (document.activeElement === el)
     return false;
-  if (el.tabIndex !== -1)
-    return false;
   return true;
 }
 
@@ -63,7 +61,6 @@ describe('Basic', function() {
 
     it('should make explicitly focusable child not focusable', function() {
       const div = document.querySelector('#fake-button');
-      expect(div.hasAttribute('tabindex')).to.equal(false);
       expect(isUnfocusable(div)).to.equal(true);
     });
 
@@ -127,52 +124,6 @@ describe('Basic', function() {
       });
     });
 
-    describe('ShadowDOM v0', function() {
-      if (!Element.prototype.createShadowRoot) {
-        console.log('ShadowDOM v0 is not supported by the browser.');
-        return;
-      }
-
-      let fixture;
-      let host;
-
-      beforeEach(function() {
-        fixture = document.querySelector('#fixture');
-        fixture.inert = false;
-        host = document.createElement('div');
-        fixture.appendChild(host);
-        host.createShadowRoot();
-      });
-
-      it('should apply inside shadow trees', function() {
-        const shadowButton = document.createElement('button');
-        shadowButton.textContent = 'Shadow button';
-        host.shadowRoot.appendChild(shadowButton);
-        shadowButton.focus();
-        fixture.inert = true;
-        expect(isUnfocusable(shadowButton)).to.equal(true);
-      });
-
-      it('should apply inert styles inside shadow trees', function() {
-        const shadowButton = document.createElement('button');
-        shadowButton.textContent = 'Shadow button';
-        host.shadowRoot.appendChild(shadowButton);
-        shadowButton.focus();
-        shadowButton.inert = true;
-        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
-      });
-
-      it('should apply inside shadow trees distributed content', function() {
-        host.shadowRoot.appendChild(document.createElement('content'));
-        const distributedButton = document.createElement('button');
-        distributedButton.textContent = 'Distributed button';
-        host.appendChild(distributedButton);
-        distributedButton.focus();
-        fixture.inert = true;
-        expect(isUnfocusable(distributedButton)).to.equal(true);
-      });
-    });
-
     describe('ShadowDOM v1', function() {
       if (!Element.prototype.attachShadow) {
         console.log('ShadowDOM v1 is not supported by the browser.');
@@ -205,12 +156,10 @@ describe('Basic', function() {
         const shadowButton = document.createElement('button');
         shadowButton.textContent = 'Shadow button';
         host.shadowRoot.appendChild(shadowButton);
-        shadowButton.focus();
         shadowButton.inert = true;
-        Promise.resolve().then(() => {
-          expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
-          done();
-        });
+        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+        shadowButton.inert = false;
+        expect(getComputedStyle(shadowButton).pointerEvents).to.equal('auto');
       });
 
       it('should apply inside shadow trees distributed content', function() {
@@ -221,6 +170,29 @@ describe('Basic', function() {
         distributedButton.focus();
         fixture.inert = true;
         expect(isUnfocusable(distributedButton)).to.equal(true);
+      });
+
+      it('should allow to call attachShadow', function() {
+        fixture.inert = true;
+        const input = document.createElement('button');
+        fixture.attachShadow({mode:'open'}).appendChild(input);
+        expect(fixture.shadowRoot.querySelector('slot')).to.equal(null);
+        expect(input.parentNode).to.equal(fixture.shadowRoot);
+        expect(isUnfocusable(input)).to.equal(true);
+      });
+
+      it('should throw error when calling attachShadow twice', function() {
+        fixture.inert = true;
+        fixture.attachShadow({mode:'open'});
+        expect(() => fixture.attachShadow({mode:'open'})).to.throw();
+      });
+
+      it('handles closed shadowRoots', function() {
+        host = document.createElement('div');
+        fixture.appendChild(host);
+        host.attachShadow({mode: 'closed'});
+        host.inert = true;
+        expect(isUnfocusable(host)).to.equal(true);
       });
     });
   });
