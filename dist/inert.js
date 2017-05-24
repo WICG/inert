@@ -104,18 +104,15 @@ var createClass = function () {
   /**
    * `InertRoot` manages a single inert subtree, i.e. a DOM subtree whose root element
    * has an `inert` attribute.
-   *
    * Its main functions are:
-   *
    * - make the rootElement untabbable.
-   *
    * - notify the manager of inerted nodes in the rootElement's shadowRoot.
    */
 
   var InertRoot = function () {
     /**
      * @param {!Element} rootElement The Element at the root of the inert subtree.
-     * @param {Function} onShadowRootMutation Callback invoked on shadow root mutations.
+     * @param {?Function} onShadowRootMutation Callback invoked on shadow root mutations.
      */
     function InertRoot(rootElement, onShadowRootMutation) {
       classCallCheck(this, InertRoot);
@@ -162,34 +159,39 @@ var createClass = function () {
       // We already failed inerting this shadow root.
       if (rootElement.__failedAttachShadow) return;
 
-      // Force shadowRoot.
-      if (!rootElement.shadowRoot) {
+      // Ensure the rootElement has a shadowRoot in order to leverage the behavior of tabindex = -1,
+      // which will remove the rootElement and its contents from the navigation order.
+      // See Step 3 https://www.w3.org/TR/shadow-dom/#dfn-document-sequential-focus-navigation-order
+      if (rootElement.shadowRoot) {
+        // It might be that rootElement had inert children in its shadowRoot and this is the first
+        // time we see them, hence we have to update their `inert` property.
+        var inertChildren = Array.from(rootElement.shadowRoot.querySelectorAll('[inert]'));
+        inertChildren.forEach(function (child) {
+          return child.inert = true;
+        });
+      } else {
         // Detect if this is a closed shadowRoot with try/catch (sigh).
+        var shadowRoot = null;
         try {
-          rootElement.attachShadow({
+          shadowRoot = rootElement.attachShadow({
             mode: 'open'
-          }).appendChild(document.createElement('slot'));
-          // NOTE: we allow attachShadow to be called again since we're using it
-          // for polyfilling inert. We ensure the shadowRoot is empty and return it.
-          rootElement.attachShadow = function () {
-            var slot = this.shadowRoot.querySelector('slot');
-            slot && this.shadowRoot.removeChild(slot);
-            delete this.attachShadow;
-            return this.shadowRoot;
-          };
+          });
         } catch (e) {
+          // Most likely a closed shadowRoot was already attached.
           rootElement.__failedAttachShadow = true;
           console.warn('Could not inert element shadowRoot', rootElement, e);
           return;
         }
-      } else {
-        // Ensure inerted elements in the shadowRoot have the property updated.
-        var inertChildren = rootElement.shadowRoot.querySelectorAll('[inert]');
-        for (var i = 0, l = inertChildren.length; i < l; i++) {
-          inertChildren[i].inert = true;
-        }
+        shadowRoot.appendChild(document.createElement('slot'));
+        // NOTE: we allow attachShadow to be called again since we're using it
+        // for polyfilling inert. We ensure the shadowRoot is empty and return it.
+        rootElement.attachShadow = function () {
+          shadowRoot.innerHTML = '';
+          delete rootElement.attachShadow;
+          return shadowRoot;
+        };
       }
-      if (typeof onShadowRootMutation === 'function') {
+      if (onShadowRootMutation !== null) {
         // Give visibility on changing nodes in the shadowRoot.
         this._observer = new MutationObserver(onShadowRootMutation);
         this._observer.observe(rootElement.shadowRoot, {
@@ -212,11 +214,7 @@ var createClass = function () {
         if (this._observer) this._observer.disconnect();
 
         this._rootElement.removeAttribute('aria-hidden');
-        if (this._rootTabindex) {
-          this._rootElement.setAttribute('tabindex', this._rootTabindex);
-        } else {
-          this._rootElement.removeAttribute('tabindex');
-        }
+        if (this._rootTabindex) this._rootElement.setAttribute('tabindex', this._rootTabindex);else this._rootElement.removeAttribute('tabindex');
 
         this._observer = null;
         this._rootElement = null;
@@ -257,13 +255,13 @@ var createClass = function () {
        */
       this._inertRoots = new Map();
 
-      this.watchForInert = this._watchForInert.bind(this);
+      this._boundWatchForInert = this._watchForInert.bind(this);
 
       /**
        * Observer for mutations on `document.body`.
        * @type {MutationObserver}
        */
-      this._observer = new MutationObserver(this.watchForInert);
+      this._observer = new MutationObserver(this._boundWatchForInert);
 
       // Add inert style.
       addInertStyle(document.head || document.body || document.documentElement);
@@ -293,7 +291,7 @@ var createClass = function () {
         if (this._inertRoots.has(root) === inert) // element is already inert
           return;
         if (inert) {
-          var inertRoot = new InertRoot(root, this.watchForInert);
+          var inertRoot = new InertRoot(root, this._boundWatchForInert);
           root.setAttribute('inert', '');
           this._inertRoots.set(root, inertRoot);
           // If not contained in the document, it must be in a shadowRoot.

@@ -47,17 +47,14 @@ import matches from 'dom-matches';
   /**
    * `InertRoot` manages a single inert subtree, i.e. a DOM subtree whose root element
    * has an `inert` attribute.
-   *
    * Its main functions are:
-   *
    * - make the rootElement untabbable.
-   *
    * - notify the manager of inerted nodes in the rootElement's shadowRoot.
    */
   class InertRoot {
     /**
      * @param {!Element} rootElement The Element at the root of the inert subtree.
-     * @param {Function} onShadowRootMutation Callback invoked on shadow root mutations.
+     * @param {?Function} onShadowRootMutation Callback invoked on shadow root mutations.
      */
     constructor(rootElement, onShadowRootMutation) {
       /** @type {Element} */
@@ -92,44 +89,50 @@ import matches from 'dom-matches';
         }
       }
 
-      if (!nativeShadowDOM) return;
+      if (!nativeShadowDOM)
+        return;
       // If element doesn't accept shadowRoot, check if it is a potential custom element
       // https://html.spec.whatwg.org/multipage/scripting.html#valid-custom-element-name
       if (!matches(rootElement, acceptsShadowRootSelector)) {
         const potentialCustomElement = rootElement.tagName.indexOf('-') !== -1;
-        if (!potentialCustomElement) return;
+        if (!potentialCustomElement)
+          return;
       }
       // We already failed inerting this shadow root.
-      if (rootElement.__failedAttachShadow) return;
+      if (rootElement.__failedAttachShadow)
+        return;
 
-      // Force shadowRoot.
-      if (!rootElement.shadowRoot) {
+      // Ensure the rootElement has a shadowRoot in order to leverage the behavior of tabindex = -1,
+      // which will remove the rootElement and its contents from the navigation order.
+      // See Step 3 https://www.w3.org/TR/shadow-dom/#dfn-document-sequential-focus-navigation-order
+      if (rootElement.shadowRoot) {
+        // It might be that rootElement had inert children in its shadowRoot and this is the first
+        // time we see them, hence we have to update their `inert` property.
+        const inertChildren = Array.from(rootElement.shadowRoot.querySelectorAll('[inert]'));
+        inertChildren.forEach((child) => child.inert = true);
+      } else {
         // Detect if this is a closed shadowRoot with try/catch (sigh).
+        let shadowRoot = null;
         try {
-          rootElement.attachShadow({
+          shadowRoot = rootElement.attachShadow({
             mode: 'open',
-          }).appendChild(document.createElement('slot'));
-          // NOTE: we allow attachShadow to be called again since we're using it
-          // for polyfilling inert. We ensure the shadowRoot is empty and return it.
-          rootElement.attachShadow = function() {
-            const slot = this.shadowRoot.querySelector('slot');
-            slot && this.shadowRoot.removeChild(slot);
-            delete this.attachShadow;
-            return this.shadowRoot;
-          };
+          });
         } catch (e) {
+          // Most likely a closed shadowRoot was already attached.
           rootElement.__failedAttachShadow = true;
           console.warn('Could not inert element shadowRoot', rootElement, e);
           return;
         }
-      } else {
-        // Ensure inerted elements in the shadowRoot have the property updated.
-        const inertChildren = rootElement.shadowRoot.querySelectorAll('[inert]');
-        for (let i = 0, l = inertChildren.length; i < l; i++) {
-          inertChildren[i].inert = true;
-        }
+        shadowRoot.appendChild(document.createElement('slot'));
+        // NOTE: we allow attachShadow to be called again since we're using it
+        // for polyfilling inert. We ensure the shadowRoot is empty and return it.
+        rootElement.attachShadow = () => {
+          shadowRoot.innerHTML = '';
+          delete rootElement.attachShadow;
+          return shadowRoot;
+        };
       }
-      if (typeof onShadowRootMutation === 'function') {
+      if (onShadowRootMutation !== null) {
         // Give visibility on changing nodes in the shadowRoot.
         this._observer = new MutationObserver(onShadowRootMutation);
         this._observer.observe(rootElement.shadowRoot, {
@@ -145,14 +148,14 @@ import matches from 'dom-matches';
      * stored in this object and updates the state of all of the managed nodes.
      */
     destructor() {
-      if (this._observer) this._observer.disconnect();
+      if (this._observer)
+        this._observer.disconnect();
 
       this._rootElement.removeAttribute('aria-hidden');
-      if (this._rootTabindex) {
+      if (this._rootTabindex)
         this._rootElement.setAttribute('tabindex', this._rootTabindex);
-      } else {
+      else
         this._rootElement.removeAttribute('tabindex');
-      }
 
       this._observer = null;
       this._rootElement = null;
@@ -186,14 +189,13 @@ import matches from 'dom-matches';
        */
       this._inertRoots = new Map();
 
-      this.watchForInert = this._watchForInert.bind(this);
+      this._boundWatchForInert = this._watchForInert.bind(this);
 
       /**
        * Observer for mutations on `document.body`.
        * @type {MutationObserver}
        */
-      this._observer = new MutationObserver(this.watchForInert);
-
+      this._observer = new MutationObserver(this._boundWatchForInert);
 
       // Add inert style.
       addInertStyle(document.head || document.body || document.documentElement);
@@ -219,7 +221,7 @@ import matches from 'dom-matches';
       if (this._inertRoots.has(root) === inert) // element is already inert
         return;
       if (inert) {
-        const inertRoot = new InertRoot(root, this.watchForInert);
+        const inertRoot = new InertRoot(root, this._boundWatchForInert);
         root.setAttribute('inert', '');
         this._inertRoots.set(root, inertRoot);
         // If not contained in the document, it must be in a shadowRoot.
@@ -333,7 +335,8 @@ import matches from 'dom-matches';
       while (target.assignedSlot) target = target.assignedSlot;
       target = target.parentNode || target.host;
     }
-    if (target && target.inert) return;
+    if (target && target.inert)
+      return;
     return nativeFocus.call(this);
   };
 })(document);
