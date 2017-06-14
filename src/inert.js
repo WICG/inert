@@ -127,7 +127,7 @@ class InertRoot {
       if (root)
         activeElement = root.activeElement;
     }
-    if (startNode.contains(activeElement))
+    if (startNode.contains && startNode.contains(activeElement))
       activeElement.blur();
   }
 
