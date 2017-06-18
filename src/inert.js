@@ -87,12 +87,14 @@ class InertRoot {
     this._observer.disconnect();
     this._observer = null;
 
-    if (this._rootElement)
+    if (this._rootElement) {
       this._rootElement.removeAttribute('aria-hidden');
+    }
     this._rootElement = null;
 
-    for (let inertNode of this._managedNodes)
+    for (let inertNode of this._managedNodes) {
       this._unmanageNode(inertNode.node);
+    }
 
     this._managedNodes = null;
 
@@ -124,27 +126,32 @@ class InertRoot {
         }
         node = node.parentNode;
       }
-      if (root)
+      if (root) {
         activeElement = root.activeElement;
+      }
     }
-    if (startNode.contains && startNode.contains(activeElement))
+    if (startNode.contains && startNode.contains(activeElement)) {
       activeElement.blur();
+    }
   }
 
   /**
    * @param {Node} node
    */
   _visitNode(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE)
+    if (node.nodeType !== Node.ELEMENT_NODE) {
       return;
+    }
 
     // If a descendant inert root becomes un-inert, its descendants will still be inert because of
     // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
-    if (node !== this._rootElement && node.hasAttribute('inert'))
+    if (node !== this._rootElement && node.hasAttribute('inert')) {
       this._adoptInertRoot(node);
+    }
 
-    if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex'))
+    if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
       this._manageNode(node);
+    }
   }
 
   /**
@@ -162,8 +169,9 @@ class InertRoot {
    */
   _unmanageNode(node) {
     const inertNode = this._inertManager.deregister(node, this);
-    if (inertNode)
+    if (inertNode) {
       this._managedNodes.delete(inertNode);
+    }
   }
 
   /**
@@ -188,8 +196,9 @@ class InertRoot {
       inertSubroot = this._inertManager.getInertRoot(node);
     }
 
-    for (let savedInertNode of inertSubroot.managedNodes)
+    for (let savedInertNode of inertSubroot.managedNodes) {
       this._manageNode(savedInertNode.node);
+    }
   }
 
   /**
@@ -202,12 +211,14 @@ class InertRoot {
       const target = record.target;
       if (record.type === 'childList') {
         // Manage added nodes
-        for (let node of Array.from(record.addedNodes))
+        for (let node of Array.from(record.addedNodes)) {
           this._makeSubtreeUnfocusable(node);
+        }
 
         // Un-manage removed nodes
-        for (let node of Array.from(record.removedNodes))
+        for (let node of Array.from(record.removedNodes)) {
           this._unmanageSubtree(node);
+        }
       } else if (record.type === 'attributes') {
         if (record.attributeName === 'tabindex') {
           // Re-initialise inert node if tabindex changes
@@ -220,8 +231,9 @@ class InertRoot {
           this._adoptInertRoot(target);
           const inertSubroot = this._inertManager.getInertRoot(target);
           for (let managedNode of this._managedNodes) {
-            if (target.contains(managedNode.node))
+            if (target.contains(managedNode.node)) {
               inertSubroot._manageNode(managedNode.node);
+            }
           }
         }
       }
@@ -276,14 +288,16 @@ class InertNode {
     this._throwIfDestroyed();
 
     if (this._node) {
-      if (this.hasSavedTabIndex)
+      if (this.hasSavedTabIndex) {
         this._node.setAttribute('tabindex', this.savedTabIndex);
-      else
+      } else {
         this._node.removeAttribute('tabindex');
+      }
 
       // Use `delete` to restore native focus method.
-      if (this._overrodeFocusMethod)
+      if (this._overrodeFocusMethod) {
         delete this._node.focus;
+      }
     }
     this._node = null;
     this._inertRoots = null;
@@ -303,8 +317,9 @@ class InertNode {
    * Throw if user tries to access destroyed InertNode.
    */
   _throwIfDestroyed() {
-    if (this.destroyed)
+    if (this.destroyed) {
       throw new Error('Trying to access destroyed InertNode');
+    }
   }
 
   /** @return {boolean} */
@@ -334,11 +349,13 @@ class InertNode {
   ensureUntabbable() {
     const node = this.node;
     if (matches(node, _focusableElementsString)) {
-      if (node.tabIndex === -1 && this.hasSavedTabIndex)
+      if (node.tabIndex === -1 && this.hasSavedTabIndex) {
         return;
+      }
 
-      if (node.hasAttribute('tabindex'))
+      if (node.hasAttribute('tabindex')) {
         this._savedTabIndex = node.tabIndex;
+      }
       node.setAttribute('tabindex', '-1');
       if (node.nodeType === Node.ELEMENT_NODE) {
         node.focus = function() {};
@@ -368,8 +385,9 @@ class InertNode {
   removeInertRoot(inertRoot) {
     this._throwIfDestroyed();
     this._inertRoots.delete(inertRoot);
-    if (this._inertRoots.size === 0)
+    if (this._inertRoots.size === 0) {
       this.destructor();
+    }
   }
 }
 
@@ -387,8 +405,9 @@ class InertManager {
    * @param {Document} document
    */
   constructor(document) {
-    if (!document)
+    if (!document) {
       throw new Error('Missing required argument; InertManager needs to wrap a document.');
+    }
 
     /** @type {Document} */
     this._document = document;
@@ -430,8 +449,9 @@ class InertManager {
    */
   setInert(root, inert) {
     if (inert) {
-      if (this._inertRoots.has(root))   // element is already inert
+      if (this._inertRoots.has(root)) { // element is already inert
         return;
+      }
 
       const inertRoot = new InertRoot(root, this);
       root.setAttribute('inert', '');
@@ -448,8 +468,9 @@ class InertManager {
         }
       }
     } else {
-      if (!this._inertRoots.has(root))  // element is already non-inert
+      if (!this._inertRoots.has(root)) { // element is already non-inert
         return;
+      }
 
       const inertRoot = this._inertRoots.get(root);
       inertRoot.destructor();
@@ -477,7 +498,7 @@ class InertManager {
    */
   register(node, inertRoot) {
     let inertNode = this._managedNodes.get(node);
-    if (inertNode !== undefined) {  // node was already in an inert subtree
+    if (inertNode !== undefined) { // node was already in an inert subtree
       inertNode.addInertRoot(inertRoot);
       // Update saved tabindex value if necessary
       inertNode.ensureUntabbable();
@@ -501,12 +522,14 @@ class InertManager {
    */
   deregister(node, inertRoot) {
     const inertNode = this._managedNodes.get(node);
-    if (!inertNode)
+    if (!inertNode) {
       return null;
+    }
 
     inertNode.removeInertRoot(inertRoot);
-    if (inertNode.destroyed)
+    if (inertNode.destroyed) {
       this._managedNodes.delete(node);
+    }
 
     return inertNode;
   }
@@ -517,8 +540,9 @@ class InertManager {
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
     const inertElements = Array.from(this._document.querySelectorAll('[inert]'));
-    for (let inertElement of inertElements)
+    for (let inertElement of inertElements) {
       this.setInert(inertElement, true);
+    }
 
     // Comment this out to use programmatic API only.
     this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
@@ -534,18 +558,22 @@ class InertManager {
       switch (record.type) {
       case 'childList':
         for (let node of Array.from(record.addedNodes)) {
-          if (node.nodeType !== Node.ELEMENT_NODE)
+          if (node.nodeType !== Node.ELEMENT_NODE) {
             continue;
+          }
           const inertElements = Array.from(node.querySelectorAll('[inert]'));
-          if (matches(node, '[inert]'))
+          if (matches(node, '[inert]')) {
             inertElements.unshift(node);
-          for (let inertElement of inertElements)
+          }
+          for (let inertElement of inertElements) {
             this.setInert(inertElement, true);
+          }
         }
         break;
       case 'attributes':
-        if (record.attributeName !== 'inert')
+        if (record.attributeName !== 'inert') {
           continue;
+        }
         const target = record.target;
         const inert = target.hasAttribute('inert');
         this.setInert(target, inert);
@@ -565,8 +593,9 @@ class InertManager {
 function composedTreeWalk(node, callback, shadowRootAncestor) {
   if (node.nodeType == Node.ELEMENT_NODE) {
     const element = /** @type {Element} */ (node);
-    if (callback)
+    if (callback) {
       callback(element);
+    }
 
     // Descend into node:
     // If it has a ShadowRoot, ignore all child elements - these will be picked
