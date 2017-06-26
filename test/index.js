@@ -23,12 +23,15 @@ const fixtureLoader = new Fixture();
 function isUnfocusable(el) {
   var oldActiveElement = document.activeElement;
   el.focus();
-  if (document.activeElement !== oldActiveElement)
+  if (document.activeElement !== oldActiveElement) {
     return false;
-  if (document.activeElement === el)
+  }
+  if (document.activeElement === el) {
     return false;
-  if (el.tabIndex !== -1)
+  }
+  if (el.tabIndex !== -1) {
     return false;
+  }
   return true;
 }
 
@@ -38,7 +41,7 @@ describe('Basic', function() {
 
   describe('Element.prototype', function() {
     it('should patch the Element prototype', function() {
-      expect(Element.prototype.hasOwnProperty('inert')).to.be.ok;
+      expect(Element.prototype.hasOwnProperty('inert')).to.be.ok; // eslint-disable-line
     });
   });
 
@@ -309,19 +312,23 @@ describe('Basic', function() {
       const tabindexes = new Map();
       const focusableElements = new Set();
       for (let el of Array.from(container.children)) {
-        if (el.hasAttribute('tabindex'))
+        if (el.hasAttribute('tabindex')) {
           tabindexes.set(el, el.getAttribute('tabindex'));
-        if (!isUnfocusable(el))
+        }
+        if (!isUnfocusable(el)) {
           focusableElements.add(el);
+        }
       }
 
       container.inert = true;
-      for (let focusableEl of focusableElements)
+      for (let focusableEl of focusableElements) {
         expect(isUnfocusable(focusableEl)).to.equal(true);
+      }
 
       container.inert = false;
-      for (let focusableEl of focusableElements)
+      for (let focusableEl of focusableElements) {
         expect(isUnfocusable(focusableEl)).to.equal(false);
+      }
 
       for (let el of Array.from(container.children)) {
         let tabindex = tabindexes.get(el);

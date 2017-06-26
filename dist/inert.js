@@ -182,7 +182,9 @@ var createClass = function () {
         this._observer.disconnect();
         this._observer = null;
 
-        if (this._rootElement) this._rootElement.removeAttribute('aria-hidden');
+        if (this._rootElement) {
+          this._rootElement.removeAttribute('aria-hidden');
+        }
         this._rootElement = null;
 
         var _iteratorNormalCompletion = true;
@@ -245,9 +247,13 @@ var createClass = function () {
             }
             node = node.parentNode;
           }
-          if (root) activeElement = root.activeElement;
+          if (root) {
+            activeElement = root.activeElement;
+          }
         }
-        if (index$1(startNode, activeElement)) activeElement.blur();
+        if (index$1(startNode, activeElement)) {
+          activeElement.blur();
+        }
       }
 
       /**
@@ -257,13 +263,19 @@ var createClass = function () {
     }, {
       key: '_visitNode',
       value: function _visitNode(node) {
-        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        if (node.nodeType !== Node.ELEMENT_NODE) {
+          return;
+        }
 
         // If a descendant inert root becomes un-inert, its descendants will still be inert because of
         // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
-        if (node !== this._rootElement && node.hasAttribute('inert')) this._adoptInertRoot(node);
+        if (node !== this._rootElement && node.hasAttribute('inert')) {
+          this._adoptInertRoot(node);
+        }
 
-        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) this._manageNode(node);
+        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+          this._manageNode(node);
+        }
       }
 
       /**
@@ -287,7 +299,9 @@ var createClass = function () {
       key: '_unmanageNode',
       value: function _unmanageNode(node) {
         var inertNode = this._inertManager.deregister(node, this);
-        if (inertNode) this._managedNodes.delete(inertNode);
+        if (inertNode) {
+          this._managedNodes.delete(inertNode);
+        }
       }
 
       /**
@@ -377,7 +391,9 @@ var createClass = function () {
                   var node = _step4.value;
 
                   this._makeSubtreeUnfocusable(node);
-                } // Un-manage removed nodes
+                }
+
+                // Un-manage removed nodes
               } catch (err) {
                 _didIteratorError4 = true;
                 _iteratorError4 = err;
@@ -434,7 +450,9 @@ var createClass = function () {
                   for (var _iterator6 = this._managedNodes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
                     var managedNode = _step6.value;
 
-                    if (index$1(target, managedNode.node)) inertSubroot._manageNode(managedNode.node);
+                    if (index$1(target, managedNode.node)) {
+                      inertSubroot._manageNode(managedNode.node);
+                    }
                   }
                 } catch (err) {
                   _didIteratorError6 = true;
@@ -532,10 +550,16 @@ var createClass = function () {
         this._throwIfDestroyed();
 
         if (this._node) {
-          if (this.hasSavedTabIndex) this._node.setAttribute('tabindex', this.savedTabIndex);else this._node.removeAttribute('tabindex');
+          if (this.hasSavedTabIndex) {
+            this._node.setAttribute('tabindex', this.savedTabIndex);
+          } else {
+            this._node.removeAttribute('tabindex');
+          }
 
           // Use `delete` to restore native focus method.
-          if (this._overrodeFocusMethod) delete this._node.focus;
+          if (this._overrodeFocusMethod) {
+            delete this._node.focus;
+          }
         }
         this._node = null;
         this._inertRoots = null;
@@ -556,7 +580,9 @@ var createClass = function () {
        * Throw if user tries to access destroyed InertNode.
        */
       value: function _throwIfDestroyed() {
-        if (this.destroyed) throw new Error('Trying to access destroyed InertNode');
+        if (this.destroyed) {
+          throw new Error('Trying to access destroyed InertNode');
+        }
       }
 
       /** @return {boolean} */
@@ -569,9 +595,13 @@ var createClass = function () {
       value: function ensureUntabbable() {
         var node = this.node;
         if (index(node, _focusableElementsString)) {
-          if (node.tabIndex === -1 && this.hasSavedTabIndex) return;
+          if (node.tabIndex === -1 && this.hasSavedTabIndex) {
+            return;
+          }
 
-          if (node.hasAttribute('tabindex')) this._savedTabIndex = node.tabIndex;
+          if (node.hasAttribute('tabindex')) {
+            this._savedTabIndex = node.tabIndex;
+          }
           node.setAttribute('tabindex', '-1');
           if (node.nodeType === Node.ELEMENT_NODE) {
             node.focus = function () {};
@@ -607,7 +637,9 @@ var createClass = function () {
       value: function removeInertRoot(inertRoot) {
         this._throwIfDestroyed();
         this._inertRoots.delete(inertRoot);
-        if (this._inertRoots.size === 0) this.destructor();
+        if (this._inertRoots.size === 0) {
+          this.destructor();
+        }
       }
     }, {
       key: 'destroyed',
@@ -666,7 +698,9 @@ var createClass = function () {
     function InertManager(document) {
       classCallCheck(this, InertManager);
 
-      if (!document) throw new Error('Missing required argument; InertManager needs to wrap a document.');
+      if (!document) {
+        throw new Error('Missing required argument; InertManager needs to wrap a document.');
+      }
 
       /** @type {Document} */
       this._document = document;
@@ -711,8 +745,10 @@ var createClass = function () {
       key: 'setInert',
       value: function setInert(root, inert) {
         if (inert) {
-          if (this._inertRoots.has(root)) // element is already inert
+          if (this._inertRoots.has(root)) {
+            // element is already inert
             return;
+          }
 
           var inertRoot = new InertRoot(root, this);
           root.setAttribute('inert', '');
@@ -729,8 +765,10 @@ var createClass = function () {
             }
           }
         } else {
-          if (!this._inertRoots.has(root)) // element is already non-inert
+          if (!this._inertRoots.has(root)) {
+            // element is already non-inert
             return;
+          }
 
           var _inertRoot = this._inertRoots.get(root);
           _inertRoot.destructor();
@@ -792,10 +830,14 @@ var createClass = function () {
       key: 'deregister',
       value: function deregister(node, inertRoot) {
         var inertNode = this._managedNodes.get(node);
-        if (!inertNode) return null;
+        if (!inertNode) {
+          return null;
+        }
 
         inertNode.removeInertRoot(inertRoot);
-        if (inertNode.destroyed) this._managedNodes.delete(node);
+        if (inertNode.destroyed) {
+          this._managedNodes.delete(node);
+        }
 
         return inertNode;
       }
@@ -818,7 +860,9 @@ var createClass = function () {
             var inertElement = _step7.value;
 
             this.setInert(inertElement, true);
-          } // Comment this out to use programmatic API only.
+          }
+
+          // Comment this out to use programmatic API only.
         } catch (err) {
           _didIteratorError7 = true;
           _iteratorError7 = err;
@@ -864,9 +908,13 @@ var createClass = function () {
                   for (var _iterator9 = Array.from(record.addedNodes)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
                     var node = _step9.value;
 
-                    if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                    if (node.nodeType !== Node.ELEMENT_NODE) {
+                      continue;
+                    }
                     var inertElements = Array.from(node.querySelectorAll('[inert]'));
-                    if (index(node, '[inert]')) inertElements.unshift(node);
+                    if (index(node, '[inert]')) {
+                      inertElements.unshift(node);
+                    }
                     var _iteratorNormalCompletion10 = true;
                     var _didIteratorError10 = false;
                     var _iteratorError10 = undefined;
@@ -909,7 +957,9 @@ var createClass = function () {
 
                 break;
               case 'attributes':
-                if (record.attributeName !== 'inert') continue;
+                if (record.attributeName !== 'inert') {
+                  continue;
+                }
                 var target = record.target;
                 var inert = target.hasAttribute('inert');
                 this.setInert(target, inert);
@@ -947,7 +997,9 @@ var createClass = function () {
   function composedTreeWalk(node, callback, shadowRootAncestor) {
     if (node.nodeType == Node.ELEMENT_NODE) {
       var element = /** @type {Element} */node;
-      if (callback) callback(element);
+      if (callback) {
+        callback(element);
+      }
 
       // Descend into node:
       // If it has a ShadowRoot, ignore all child elements - these will be picked
