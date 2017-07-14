@@ -70,7 +70,7 @@ var index$1 = contains;
  */
 
 function contains (node, other) {
-  return node === other || !!(node.compareDocumentPosition(other) & 16);
+  return other && (node === other || !!(node.compareDocumentPosition(other) & 16) );
 }
 
 var classCallCheck = function (instance, Constructor) {
