@@ -247,7 +247,7 @@ var createClass = function () {
             }
             node = node.parentNode;
           }
-          if (root) {
+          if (root && root.activeElement) {
             activeElement = root.activeElement;
           }
         }
