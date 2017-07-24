@@ -16,7 +16,6 @@
  */
 
 import matches from 'dom-matches';
-import contains from 'node-contains';
 
 (function(document) {
 /** @type {string} */
@@ -669,6 +668,20 @@ function addInertStyle(node) {
                       '  -ms-user-select: none;\n' +
                       '}\n';
   node.appendChild(style);
+}
+
+/**
+ * `Node#contains()` polyfill.
+ *
+ * See: http://compatibility.shwups-cms.ch/en/polyfills/?&id=1
+ *
+ * @param {Node} node
+ * @param {Node} other
+ * @return {Boolean}
+ * @public
+ */
+function contains(node, other) {
+  return other && (node === other || !!(node.compareDocumentPosition(other) & 16) );
 }
 
 const inertManager = new InertManager(document);
