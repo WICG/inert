@@ -241,7 +241,7 @@ npm install --save wicg-inert
 ```
 Using Bower:
 ```
-bower install WICG/inert
+bower install --save WICG/inert
 ```
 
 ### Legacy Browser Support
