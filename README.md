@@ -235,9 +235,13 @@ Promise.resolve().then(() => {
   - To mitigate this, avoid these types of mutations as much as possible when using this polyfill.
 
 ### Install
-
+Using npm:
 ```
 npm install --save wicg-inert
+```
+Using Bower:
+```
+bower install --save WICG/inert
 ```
 
 ### Legacy Browser Support
