@@ -52,27 +52,6 @@ function matches(elem, selector) {
 
 var index = matches;
 
-/**
- * Module exports.
- */
-
-var index$1 = contains;
-
-/**
- * `Node#contains()` polyfill.
- *
- * See: http://compatibility.shwups-cms.ch/en/polyfills/?&id=1
- *
- * @param {Node} node
- * @param {Node} other
- * @return {Boolean}
- * @public
- */
-
-function contains (node, other) {
-  return node === other || !!(node.compareDocumentPosition(other) & 16);
-}
-
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -236,7 +215,7 @@ var createClass = function () {
         });
 
         var activeElement = document.activeElement;
-        if (!index$1(document.body, startNode)) {
+        if (!contains(document.body, startNode)) {
           // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
           var node = startNode;
           var root = undefined;
@@ -251,7 +230,7 @@ var createClass = function () {
             activeElement = root.activeElement;
           }
         }
-        if (index$1(startNode, activeElement)) {
+        if (contains(startNode, activeElement)) {
           activeElement.blur();
         }
       }
@@ -450,7 +429,7 @@ var createClass = function () {
                   for (var _iterator6 = this._managedNodes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
                     var managedNode = _step6.value;
 
-                    if (index$1(target, managedNode.node)) {
+                    if (contains(target, managedNode.node)) {
                       inertSubroot._manageNode(managedNode.node);
                     }
                   }
@@ -755,7 +734,7 @@ var createClass = function () {
           this._inertRoots.set(root, inertRoot);
           // If not contained in the document, it must be in a shadowRoot.
           // Ensure inert styles are added there.
-          if (!index$1(this._document.body, root)) {
+          if (!contains(this._document.body, root)) {
             var parent = root.parentNode;
             while (parent) {
               if (parent.nodeType === 11) {
@@ -1059,6 +1038,20 @@ var createClass = function () {
     style.setAttribute('id', 'inert-style');
     style.textContent = '\n' + '[inert] {\n' + '  pointer-events: none;\n' + '  cursor: default;\n' + '}\n' + '\n' + '[inert], [inert] * {\n' + '  user-select: none;\n' + '  -webkit-user-select: none;\n' + '  -moz-user-select: none;\n' + '  -ms-user-select: none;\n' + '}\n';
     node.appendChild(style);
+  }
+
+  /**
+   * `Node#contains()` polyfill.
+   *
+   * See: http://compatibility.shwups-cms.ch/en/polyfills/?&id=1
+   *
+   * @param {Node} node
+   * @param {Node} other
+   * @return {Boolean}
+   * @public
+   */
+  function contains(node, other) {
+    return other && (node === other || !!(node.compareDocumentPosition(other) & 16));
   }
 
   var inertManager = new InertManager(document);

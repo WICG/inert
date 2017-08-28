@@ -216,6 +216,17 @@ describe('Basic', function() {
         });
       });
 
+      it('should apply inert styles inside shadow trees that aren\'t focused', function() {
+        const shadowButton = document.createElement('button');
+        shadowButton.textContent = 'Shadow button';
+        host.shadowRoot.appendChild(shadowButton);
+        shadowButton.inert = true;
+        Promise.resolve().then(() => {
+          expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
+          done();
+        });
+      });
+
       it('should apply inside shadow trees distributed content', function() {
         host.shadowRoot.appendChild(document.createElement('slot'));
         const distributedButton = document.createElement('button');
