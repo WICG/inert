@@ -65,6 +65,9 @@ class InertRoot {
     this._managedNodes = new Set([]);
 
     // Make the subtree hidden from assistive technology
+    if (this._rootElement.hasAttribute('aria-hidden')) {
+      this._savedAriaHidden = this._rootElement.getAttribute('aria-hidden');
+    }
     this._rootElement.setAttribute('aria-hidden', 'true');
 
     // Make all focusable elements in the subtree unfocusable and add them to _managedNodes
@@ -88,7 +91,11 @@ class InertRoot {
     this._observer = null;
 
     if (this._rootElement) {
-      this._rootElement.removeAttribute('aria-hidden');
+      if (this.hasSavedAriaHidden) {
+        this._rootElement.setAttribute('aria-hidden', this.savedAriaHidden);
+      } else {
+        this._rootElement.removeAttribute('aria-hidden');
+      }
     }
     this._rootElement = null;
 
@@ -106,6 +113,21 @@ class InertRoot {
    */
   get managedNodes() {
     return new Set(this._managedNodes);
+  }
+
+  /** @return {boolean} */
+  get hasSavedAriaHidden() {
+    return '_savedAriaHidden' in this;
+  }
+
+  /** @param {string} ariaHidden */
+  set savedAriaHidden(ariaHidden) {
+    this._savedAriaHidden = ariaHidden;
+  }
+
+  /** @return {string} */
+  get savedAriaHidden() {
+    return this._savedAriaHidden;
   }
 
   /**
