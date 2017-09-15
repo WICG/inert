@@ -50,7 +50,7 @@ function matches(elem, selector) {
  * Expose `matches`
  */
 
-var index = matches;
+var domMatches = matches;
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -135,6 +135,9 @@ var createClass = function () {
       this._managedNodes = new Set([]);
 
       // Make the subtree hidden from assistive technology
+      if (this._rootElement.hasAttribute('aria-hidden')) {
+        this._savedAriaHidden = this._rootElement.getAttribute('aria-hidden');
+      }
       this._rootElement.setAttribute('aria-hidden', 'true');
 
       // Make all focusable elements in the subtree unfocusable and add them to _managedNodes
@@ -162,7 +165,11 @@ var createClass = function () {
         this._observer = null;
 
         if (this._rootElement) {
-          this._rootElement.removeAttribute('aria-hidden');
+          if (this.hasSavedAriaHidden) {
+            this._rootElement.setAttribute('aria-hidden', this.savedAriaHidden);
+          } else {
+            this._rootElement.removeAttribute('aria-hidden');
+          }
         }
         this._rootElement = null;
 
@@ -252,7 +259,7 @@ var createClass = function () {
           this._adoptInertRoot(node);
         }
 
-        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+        if (domMatches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
           this._manageNode(node);
         }
       }
@@ -470,6 +477,28 @@ var createClass = function () {
       get: function get$$1() {
         return new Set(this._managedNodes);
       }
+
+      /** @return {boolean} */
+
+    }, {
+      key: 'hasSavedAriaHidden',
+      get: function get$$1() {
+        return '_savedAriaHidden' in this;
+      }
+
+      /** @param {string} ariaHidden */
+
+    }, {
+      key: 'savedAriaHidden',
+      set: function set$$1(ariaHidden) {
+        this._savedAriaHidden = ariaHidden;
+      }
+
+      /** @return {string} */
+      ,
+      get: function get$$1() {
+        return this._savedAriaHidden;
+      }
     }]);
     return InertRoot;
   }();
@@ -573,7 +602,7 @@ var createClass = function () {
       /** Save the existing tabindex value and make the node untabbable and unfocusable */
       value: function ensureUntabbable() {
         var node = this.node;
-        if (index(node, _focusableElementsString)) {
+        if (domMatches(node, _focusableElementsString)) {
           if (node.tabIndex === -1 && this.hasSavedTabIndex) {
             return;
           }
@@ -891,7 +920,7 @@ var createClass = function () {
                       continue;
                     }
                     var inertElements = Array.from(node.querySelectorAll('[inert]'));
-                    if (index(node, '[inert]')) {
+                    if (domMatches(node, '[inert]')) {
                       inertElements.unshift(node);
                     }
                     var _iteratorNormalCompletion10 = true;
