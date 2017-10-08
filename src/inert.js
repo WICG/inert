@@ -18,6 +18,10 @@
 import matches from 'dom-matches';
 
 (function(document) {
+// Convenience function for converting NodeLists.
+/** @type {function(number,number):Array} */
+const slice = Array.prototype.slice;
+
 /** @type {string} */
 const _focusableElementsString = ['a[href]',
                                   'area[href]',
@@ -233,12 +237,12 @@ class InertRoot {
       const target = record.target;
       if (record.type === 'childList') {
         // Manage added nodes
-        for (let node of Array.from(record.addedNodes)) {
+        for (let node of slice.call(record.addedNodes)) {
           this._makeSubtreeUnfocusable(node);
         }
 
         // Un-manage removed nodes
-        for (let node of Array.from(record.removedNodes)) {
+        for (let node of slice.call(record.removedNodes)) {
           this._unmanageSubtree(node);
         }
       } else if (record.type === 'attributes') {
@@ -561,7 +565,7 @@ class InertManager {
    */
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
-    const inertElements = Array.from(this._document.querySelectorAll('[inert]'));
+    const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
     for (let inertElement of inertElements) {
       this.setInert(inertElement, true);
     }
@@ -579,11 +583,11 @@ class InertManager {
     for (let record of records) {
       switch (record.type) {
       case 'childList':
-        for (let node of Array.from(record.addedNodes)) {
+        for (let node of slice.call(record.addedNodes)) {
           if (node.nodeType !== Node.ELEMENT_NODE) {
             continue;
           }
-          const inertElements = Array.from(node.querySelectorAll('[inert]'));
+          const inertElements = slice.call(node.querySelectorAll('[inert]'));
           if (matches(node, '[inert]')) {
             inertElements.unshift(node);
           }
