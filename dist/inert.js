@@ -50,7 +50,7 @@ function matches(elem, selector) {
  * Expose `matches`
  */
 
-var domMatches = matches;
+var index = matches;
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -94,6 +94,10 @@ var createClass = function () {
  */
 
 (function (document) {
+  // Convenience function for converting NodeLists.
+  /** @type {function(number,number):Array} */
+  var slice = Array.prototype.slice;
+
   /** @type {string} */
   var _focusableElementsString = ['a[href]', 'area[href]', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', 'button:not([disabled])', 'iframe', 'object', 'embed', '[contenteditable]'].join(',');
 
@@ -259,7 +263,7 @@ var createClass = function () {
           this._adoptInertRoot(node);
         }
 
-        if (domMatches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
           this._manageNode(node);
         }
       }
@@ -373,7 +377,7 @@ var createClass = function () {
               var _iteratorError4 = undefined;
 
               try {
-                for (var _iterator4 = Array.from(record.addedNodes)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                for (var _iterator4 = slice.call(record.addedNodes)[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
                   var node = _step4.value;
 
                   this._makeSubtreeUnfocusable(node);
@@ -400,7 +404,7 @@ var createClass = function () {
               var _iteratorError5 = undefined;
 
               try {
-                for (var _iterator5 = Array.from(record.removedNodes)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                for (var _iterator5 = slice.call(record.removedNodes)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
                   var _node = _step5.value;
 
                   this._unmanageSubtree(_node);
@@ -602,7 +606,7 @@ var createClass = function () {
       /** Save the existing tabindex value and make the node untabbable and unfocusable */
       value: function ensureUntabbable() {
         var node = this.node;
-        if (domMatches(node, _focusableElementsString)) {
+        if (index(node, _focusableElementsString)) {
           if (node.tabIndex === -1 && this.hasSavedTabIndex) {
             return;
           }
@@ -858,7 +862,7 @@ var createClass = function () {
       key: '_onDocumentLoaded',
       value: function _onDocumentLoaded() {
         // Find all inert roots in document and make them actually inert.
-        var inertElements = Array.from(this._document.querySelectorAll('[inert]'));
+        var inertElements = slice.call(this._document.querySelectorAll('[inert]'));
         var _iteratorNormalCompletion7 = true;
         var _didIteratorError7 = false;
         var _iteratorError7 = undefined;
@@ -913,14 +917,14 @@ var createClass = function () {
                 var _iteratorError9 = undefined;
 
                 try {
-                  for (var _iterator9 = Array.from(record.addedNodes)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                  for (var _iterator9 = slice.call(record.addedNodes)[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
                     var node = _step9.value;
 
                     if (node.nodeType !== Node.ELEMENT_NODE) {
                       continue;
                     }
-                    var inertElements = Array.from(node.querySelectorAll('[inert]'));
-                    if (domMatches(node, '[inert]')) {
+                    var inertElements = slice.call(node.querySelectorAll('[inert]'));
+                    if (index(node, '[inert]')) {
                       inertElements.unshift(node);
                     }
                     var _iteratorNormalCompletion10 = true;
