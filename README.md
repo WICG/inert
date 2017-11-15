@@ -1,5 +1,7 @@
 # `inert` attribute
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/WICG/inert.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/WICG/inert.svg?branch=master)](https://travis-ci.org/WICG/inert)
 [![Dependencies Status](https://david-dm.org/WICG/inert/status.svg)](https://david-dm.org/WICG/inert)
 [![DevDependencies Status](https://david-dm.org/WICG/inert/dev-status.svg)](https://david-dm.org/WICG/inert?type=dev)
