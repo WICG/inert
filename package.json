@@ -43,7 +43,7 @@
     "eslint-config-google": "^0.9.1",
     "mocha": "^4.0.1",
     "rollem": "^1.11.0",
-    "rollup": "^0.51.5",
+    "rollup": "^0.51.8",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
