@@ -10,14 +10,9 @@
  * @return {boolean}
  */
 function matches(elem, selector) {
-  if (!elem || elem.nodeType !== Node.ELEMENT_NODE) {
-    return false;
-  }
-  // Vendor-specific implementations of `Element.prototype.matches()`.
-  const matches = elem.matches || elem.mozMatchesSelector ||
-      elem.msMatchesSelector || elem.oMatchesSelector ||
-      elem.webkitMatchesSelector || ((_) => false);
-  return matches(selector);
+  return elem &&
+         elem.nodeType === Node.ELEMENT_NODE &&
+         elem.matches(selector);
 }
 
 // Convenience function for converting NodeLists.

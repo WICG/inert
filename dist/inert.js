@@ -40,14 +40,7 @@ var createClass = function () {
    * @return {boolean}
    */
   function matches(elem, selector) {
-    if (!elem || elem.nodeType !== Node.ELEMENT_NODE) {
-      return false;
-    }
-    // Vendor-specific implementations of `Element.prototype.matches()`.
-    var matches = elem.matches || elem.mozMatchesSelector || elem.msMatchesSelector || elem.oMatchesSelector || elem.webkitMatchesSelector || function (_) {
-      return false;
-    };
-    return matches(selector);
+    return elem && elem.nodeType === Node.ELEMENT_NODE && elem.matches(selector);
   }
 
   // Convenience function for converting NodeLists.
