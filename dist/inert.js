@@ -4,54 +4,6 @@
 	(factory());
 }(this, (function () { 'use strict';
 
-/**
- * Determine if a DOM element matches a CSS selector
- *
- * @param {Element} elem
- * @param {String} selector
- * @return {Boolean}
- * @api public
- */
-
-function matches(elem, selector) {
-  // Vendor-specific implementations of `Element.prototype.matches()`.
-  var proto = window.Element.prototype;
-  var nativeMatches = proto.matches ||
-      proto.mozMatchesSelector ||
-      proto.msMatchesSelector ||
-      proto.oMatchesSelector ||
-      proto.webkitMatchesSelector;
-
-  if (!elem || elem.nodeType !== 1) {
-    return false;
-  }
-
-  var parentElem = elem.parentNode;
-
-  // use native 'matches'
-  if (nativeMatches) {
-    return nativeMatches.call(elem, selector);
-  }
-
-  // native support for `matches` is missing and a fallback is required
-  var nodes = parentElem.querySelectorAll(selector);
-  var len = nodes.length;
-
-  for (var i = 0; i < len; i++) {
-    if (nodes[i] === elem) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-/**
- * Expose `matches`
- */
-
-var index = matches;
-
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -82,6 +34,22 @@ var createClass = function () {
  */
 
 (function (document) {
+  /**
+   * @param {Node} elem
+   * @param {string} selector
+   * @return {boolean}
+   */
+  function matches(elem, selector) {
+    if (!elem || elem.nodeType !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    // Vendor-specific implementations of `Element.prototype.matches()`.
+    var matches = elem.matches || elem.mozMatchesSelector || elem.msMatchesSelector || elem.oMatchesSelector || elem.webkitMatchesSelector || function (_) {
+      return false;
+    };
+    return matches(selector);
+  }
+
   // Convenience function for converting NodeLists.
   /** @type {function(number,number):Array} */
   var slice = Array.prototype.slice;
@@ -251,7 +219,7 @@ var createClass = function () {
           this._adoptInertRoot(node);
         }
 
-        if (index(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+        if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
           this._manageNode(node);
         }
       }
@@ -594,7 +562,7 @@ var createClass = function () {
       /** Save the existing tabindex value and make the node untabbable and unfocusable */
       value: function ensureUntabbable() {
         var node = this.node;
-        if (index(node, _focusableElementsString)) {
+        if (matches(node, _focusableElementsString)) {
           if (node.tabIndex === -1 && this.hasSavedTabIndex) {
             return;
           }
@@ -912,7 +880,7 @@ var createClass = function () {
                       continue;
                     }
                     var inertElements = slice.call(node.querySelectorAll('[inert]'));
-                    if (index(node, '[inert]')) {
+                    if (matches(node, '[inert]')) {
                       inertElements.unshift(node);
                     }
                     var _iteratorNormalCompletion10 = true;

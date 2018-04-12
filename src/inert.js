@@ -3,9 +3,23 @@
  * (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
  */
 
-import matches from 'dom-matches';
-
 (function(document) {
+/**
+ * @param {Node} elem
+ * @param {string} selector
+ * @return {boolean}
+ */
+function matches(elem, selector) {
+  if (!elem || elem.nodeType !== Node.ELEMENT_NODE) {
+    return false;
+  }
+  // Vendor-specific implementations of `Element.prototype.matches()`.
+  const matches = elem.matches || elem.mozMatchesSelector ||
+      elem.msMatchesSelector || elem.oMatchesSelector ||
+      elem.webkitMatchesSelector || ((_) => false);
+  return matches(selector);
+}
+
 // Convenience function for converting NodeLists.
 /** @type {function(number,number):Array} */
 const slice = Array.prototype.slice;
