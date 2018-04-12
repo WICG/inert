@@ -255,7 +255,7 @@ If you want to use `inert` with an older browser or JavaScript runtime like Phan
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.16.0/polyfill.min.js"></script>
 ```
 
-The polyfill also uses `Element.prototype.matches`, so include the polyfill for older browsers that don't implement it.
+The `inert` polyfill also uses `Element.prototype.matches`, so include the polyfill for older browsers that don't implement it.
 ```html
 <script src="https://cdn.polyfill.io/v2/polyfill.js?features=Element.prototype.matches"></script>
 ```
