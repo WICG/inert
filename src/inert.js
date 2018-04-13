@@ -4,17 +4,6 @@
  */
 
 (function(document) {
-/**
- * @param {Node} elem
- * @param {string} selector
- * @return {boolean}
- */
-function matches(elem, selector) {
-  return elem &&
-         elem.nodeType === Node.ELEMENT_NODE &&
-         elem.matches(selector);
-}
-
 // Convenience function for converting NodeLists.
 /** @type {function(number,number):Array} */
 const slice = Array.prototype.slice;
@@ -172,7 +161,7 @@ class InertRoot {
       this._adoptInertRoot(node);
     }
 
-    if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+    if (node.matches(_focusableElementsString) || node.hasAttribute('tabindex')) {
       this._manageNode(node);
     }
   }
@@ -371,7 +360,7 @@ class InertNode {
   /** Save the existing tabindex value and make the node untabbable and unfocusable */
   ensureUntabbable() {
     const node = this.node;
-    if (matches(node, _focusableElementsString)) {
+    if (node.matches(_focusableElementsString)) {
       if (node.tabIndex === -1 && this.hasSavedTabIndex) {
         return;
       }
@@ -585,7 +574,7 @@ class InertManager {
             continue;
           }
           const inertElements = slice.call(node.querySelectorAll('[inert]'));
-          if (matches(node, '[inert]')) {
+          if (node.matches('[inert]')) {
             inertElements.unshift(node);
           }
           for (let inertElement of inertElements) {
