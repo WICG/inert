@@ -3,8 +3,6 @@
  * (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
  */
 
-import matches from 'dom-matches';
-
 (function(document) {
 // Convenience function for converting NodeLists.
 /** @type {function(number,number):Array} */
@@ -163,7 +161,7 @@ class InertRoot {
       this._adoptInertRoot(node);
     }
 
-    if (matches(node, _focusableElementsString) || node.hasAttribute('tabindex')) {
+    if (node.matches(_focusableElementsString) || node.hasAttribute('tabindex')) {
       this._manageNode(node);
     }
   }
@@ -362,7 +360,7 @@ class InertNode {
   /** Save the existing tabindex value and make the node untabbable and unfocusable */
   ensureUntabbable() {
     const node = this.node;
-    if (matches(node, _focusableElementsString)) {
+    if (node.matches(_focusableElementsString)) {
       if (node.tabIndex === -1 && this.hasSavedTabIndex) {
         return;
       }
@@ -576,7 +574,7 @@ class InertManager {
             continue;
           }
           const inertElements = slice.call(node.querySelectorAll('[inert]'));
-          if (matches(node, '[inert]')) {
+          if (node.matches('[inert]')) {
             inertElements.unshift(node);
           }
           for (let inertElement of inertElements) {
