@@ -42,6 +42,36 @@ _If you do want to build from source, make sure you clone the latest tag!_
 </html>
 ```
 
+### 2. Toggle `inert` on an element
+
+```js
+const el = document.querySelector('#my-element');
+el.inert = true; // alternatively, el.setAttribute('inert', '');
+```
+
+### Legacy Browser Support
+
+If you want to use `inert` with an older browser you'll need to include
+additional polyfills for
+[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map),
+[Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set),
+and
+[Element.prototype.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches).
+
+In accordance with the W3C's new [polyfill
+guidance](https://www.w3.org/2001/tag/doc/polyfills/#don-t-serve-unnecessary-polyfills),
+the `inert` polyfill does not bundle other polyfills.
+
+You can use a service like [Polyfill.io](https://polyfill.io/v2/docs/examples)
+to download only the polyfills needed by the current browser. Just add the
+following line to the start of your page:
+
+```html
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set,Element.prototype.matches"></script>
+```
+
+### Performance and gotchas
+
 The polyfill attempts to provide a reasonable fidelity polyfill for the `inert`
 **attribute**, however please note:
 
@@ -72,20 +102,3 @@ Promise.resolve().then(() => {
   complete, or consider using
   [requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback)
   to set `inert`.
-
-### Legacy Browser Support
-
-If you want to use `inert` with an older browser you'll need to include
-additional polyfills for
-[Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map),
-[Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set),
-and
-[Element.prototype.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches).
-
-You can use a service like [Polyfill.io](https://polyfill.io/v2/docs/examples)
-to download only the polyfills needed by the current browser. Just add the
-following line to the start of your page:
-
-```html
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set,Element.prototype.matches"></script>
-```
