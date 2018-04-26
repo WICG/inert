@@ -6,10 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "npm run test",
-    "test:server": "http-server . -s",
-    "test:selenium": "wait-on http://localhost:8080 && node ./test/index.js",
-    "test": "npm run build && cross-env NODE_ENV=ci concurrently -k \"npm run test:server\" \"npm run test:selenium\"",
-    "sauce": "npm run build && cross-env NODE_ENV=sauce concurrently -k \"npm run test:server\" \"npm run test:selenium\""
+    "test": "npm run build && karma start"
   },
   "repository": {
     "type": "git",
@@ -32,28 +29,20 @@
   },
   "homepage": "https://github.com/WICG/inert#readme",
   "devDependencies": {
-    "chai": "^4.0.2",
-    "chromedriver": "^2.35.0",
-    "clear-module": "^2.1.0",
-    "concurrently": "^3.5.1",
-    "cross-env": "^5.1.4",
+    "chai": "^4.1.2",
     "eslint": "^4.16.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-es5": "^1.2.0",
-    "geckodriver": "^1.10.0",
-    "glob-promise": "^3.3.0",
-    "http-server": "^0.11.0",
     "husky": "^0.14.3",
+    "karma": "^2.0.2",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-sourcemap-loader": "^0.3.7",
     "lint-staged": "^7.0.0",
     "mocha": "^5.0.0",
-    "rollem": "^1.11.0",
     "rollup": "^0.58.0",
-    "rollup-plugin-babel": "^3.0.2",
-    "rollup-plugin-commonjs": "^8.0.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^3.0.0",
-    "rollup-watch": "^4.0.0",
-    "selenium-assistant": "^5.3.0",
-    "wait-on": "^2.1.0"
+    "rollup-plugin-uglify": "^3.0.0"
   }
 }
