@@ -16,7 +16,7 @@ technology.
 
 - Read the [Explainer](explainer.md).
 - Read the [Spec](https://html.spec.whatwg.org/multipage/interaction.html#inert).
-- Try the [Demo](https://wicg.github.io/inert/demo).
+- Try the [Demo](https://wicg.github.io/inert/demo/).
 - [Give feedback!](https://github.com/WICG/inert/issues)
 
 # Polyfill
