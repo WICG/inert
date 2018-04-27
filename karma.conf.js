@@ -1,4 +1,4 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = function(config) {
   config.set({
@@ -10,6 +10,7 @@ module.exports = function(config) {
       'karma-sourcemap-loader',
       'karma-fixture',
       'karma-html2js-preprocessor',
+      'karma-sauce-launcher',
     ],
     browsers: ['Chrome'],
     // Set this to false to leave the browser open for debugging.
@@ -31,4 +32,29 @@ module.exports = function(config) {
     // Report output to console.
     reporters: ['dots'],
   });
+
+  // If we're on Travis, run tests on SauceLabs.
+  if (process.env.TRAVIS) {
+    const customLaunchers = {
+      sl_chrome: {
+        base: 'SauceLabs',
+        browserName: 'chrome',
+        platform: 'macOS 10.13',
+        version: '66.0',
+      },
+    };
+
+    config.set({
+      sauceLabs: {
+        testName: 'Inert Tests',
+        username: 'robdodson_inert',
+        accessKey: 'a844aee9-d3ec-4566-94e3-dba3d0c30248',
+      },
+      // Increase timeout in case connection in CI is slow
+      captureTimeout: 120000,
+      customLaunchers: customLaunchers,
+      browsers: Object.keys(customLaunchers),
+      reporters: ['dots', 'saucelabs'],
+    });
+  }
 };
