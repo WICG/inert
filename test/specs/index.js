@@ -27,12 +27,6 @@ describe('Basic', function() {
   /* eslint-disable no-invalid-this */
   this.timeout(10000);
 
-  describe('Element.prototype', function() {
-    it('should patch the Element prototype', function() {
-      expect(Element.prototype.hasOwnProperty('inert')).to.be.ok; // eslint-disable-line
-    });
-  });
-
   describe('children of declaratively inert parent', function() {
     beforeEach(function() {
       return fixtureLoader.load('fixtures/basic.html');
@@ -40,82 +34,6 @@ describe('Basic', function() {
 
     afterEach(function() {
       fixtureLoader.destroy();
-    });
-
-    it('should have no effect on elements outside inert region', function() {
-      const button = document.querySelector('#non-inert');
-      expect(isUnfocusable(button)).to.equal(false);
-    });
-
-    it('should make implicitly focusable child not focusable', function() {
-      const button = document.querySelector('[inert] button');
-      expect(isUnfocusable(button)).to.equal(true);
-    });
-
-    it('should make explicitly focusable child not focusable', function() {
-      const div = document.querySelector('#fake-button');
-      expect(div.hasAttribute('tabindex')).to.equal(false);
-      expect(isUnfocusable(div)).to.equal(true);
-    });
-
-    it('programmatically setting inert to false should remove attribute and un-inert content',
-      function() {
-      const inertContainer = document.querySelector('[inert]');
-      expect(inertContainer.hasAttribute('inert')).to.equal(true);
-      expect(inertContainer.inert).to.equal(true);
-      const button = inertContainer.querySelector('button');
-      expect(isUnfocusable(button)).to.equal(true);
-
-      inertContainer.inert = false;
-      expect(inertContainer.hasAttribute('inert')).to.equal(false);
-      expect(inertContainer.inert).to.equal(false);
-      expect(isUnfocusable(button)).to.equal(false);
-    });
-
-    it('should be able to be reapplied multiple times', function() {
-      const inertContainer = document.querySelector('[inert]');
-      const button = document.querySelector('[inert] button');
-      expect(isUnfocusable(button)).to.equal(true);
-
-      inertContainer.inert = false;
-      expect(isUnfocusable(button)).to.equal(false);
-
-      inertContainer.inert = true;
-      expect(isUnfocusable(button)).to.equal(true);
-
-      inertContainer.inert = false;
-      expect(isUnfocusable(button)).to.equal(false);
-
-      inertContainer.inert = true;
-      expect(isUnfocusable(button)).to.equal(true);
-    });
-
-    it('should apply to dynamically added content', function(done) {
-      const newButton = document.createElement('button');
-      newButton.textContent = 'Click me too';
-      const inertContainer = document.querySelector('[inert]');
-      inertContainer.appendChild(newButton);
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
-      Promise.resolve().then(() => {
-        expect(isUnfocusable(newButton)).to.equal(true);
-        done();
-      });
-    });
-
-    it('should be detected on dynamically added content', function(done) {
-      const temp = document.createElement('div');
-      const fixture = document.querySelector('#fixture');
-      fixture.appendChild(temp);
-      expect(temp.parentElement).to.eql(fixture);
-      temp.outerHTML = '<div id="inert2" inert><button>Click me</button></div>';
-      const div = fixture.querySelector('#inert2');
-      // Wait for the next microtask to allow mutation observers to react to the DOM change
-      Promise.resolve().then(() => {
-        expect(div.inert).to.equal(true);
-        const button = div.querySelector('button');
-        expect(isUnfocusable(button)).to.equal(true);
-        done();
-      });
     });
 
     describe('ShadowDOM v0', function() {

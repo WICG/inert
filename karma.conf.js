@@ -7,20 +7,28 @@ module.exports = function(config) {
       'karma-firefox-launcher',
       'karma-mocha',
       'karma-chai',
-      'karma-sourcemap-loader'
+      'karma-sourcemap-loader',
+      'karma-fixture',
+      'karma-html2js-preprocessor',
     ],
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Chrome'],
     // Set this to false to leave the browser open for debugging.
     singleRun: true,
     // Use the mocha test framework with chai assertions.
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'fixture'],
+    preprocessors: {
+      '**/*.html': ['html2js'],
+    },
     // The root path location that will be used to resolve all relative paths
     // defined in files and exclude.
-    basePath: path.resolve(__dirname, './test'),
+    basePath: path.resolve(__dirname),
     files: [
-      'specs/foo.js'
+      'dist/inert.js',
+      'test/fixtures/**/*',
+      'test/specs/element.js',
+      'test/specs/basic.js',
     ],
     // Report output to console.
-    reporters: ['dots']
-  })
+    reporters: ['dots'],
+  });
 };
