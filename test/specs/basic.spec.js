@@ -1,18 +1,3 @@
-function isUnfocusable(el) {
-  var oldActiveElement = document.activeElement;
-  el.focus();
-  if (document.activeElement !== oldActiveElement) {
-    return false;
-  }
-  if (document.activeElement === el) {
-    return false;
-  }
-  if (el.tabIndex !== -1) {
-    return false;
-  }
-  return true;
-}
-
 describe('Basic', function() {
   before(function() {
     fixture.setBase('test/fixtures');
