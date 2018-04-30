@@ -3,7 +3,6 @@
  * (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
  */
 
-(function(document) {
 // Convenience function for converting NodeLists.
 /** @type {function(number,number):Array} */
 const slice = Array.prototype.slice;
@@ -707,4 +706,3 @@ Object.defineProperty(Element.prototype, 'inert', {
                           inertManager.setInert(this, inert);
                         },
                       });
-})(document);

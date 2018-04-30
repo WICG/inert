@@ -102,3 +102,11 @@ Promise.resolve().then(() => {
   complete, or consider using
   [requestIdleCallback](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback)
   to set `inert`.
+
+# Testing
+
+Tests are written using ES5 syntax. This is to avoid needing to transpile them
+for older browsers. There are a few modern features they rely upon, e.g.
+`Array.from` and `Promises`. These are polyfilled for the tests using
+[Polyfill.io](http://polyfill.io/). For a list of polyfilled features, check out
+the `polyfill` section in `karma.conf.js`.

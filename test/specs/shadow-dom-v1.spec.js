@@ -19,7 +19,7 @@ describe('ShadowDOM v1', function() {
     fixture.cleanup();
   });
 
-  let host;
+  var host;
 
   beforeEach(function() {
     fixture.el.inert = false;
@@ -31,7 +31,7 @@ describe('ShadowDOM v1', function() {
   });
 
   it('should apply inside shadow trees', function() {
-    const shadowButton = document.createElement('button');
+    var shadowButton = document.createElement('button');
     shadowButton.textContent = 'Shadow button';
     host.shadowRoot.appendChild(shadowButton);
     shadowButton.focus();
@@ -40,7 +40,7 @@ describe('ShadowDOM v1', function() {
   });
 
   it('should apply inert styles inside shadow trees', function() {
-    const shadowButton = document.createElement('button');
+    var shadowButton = document.createElement('button');
     shadowButton.textContent = 'Shadow button';
     host.shadowRoot.appendChild(shadowButton);
     shadowButton.focus();
@@ -52,7 +52,7 @@ describe('ShadowDOM v1', function() {
   });
 
   it('should apply inert styles inside shadow trees that aren\'t focused', function() {
-    const shadowButton = document.createElement('button');
+    var shadowButton = document.createElement('button');
     shadowButton.textContent = 'Shadow button';
     host.shadowRoot.appendChild(shadowButton);
     shadowButton.inert = true;
@@ -64,7 +64,7 @@ describe('ShadowDOM v1', function() {
 
   it('should apply inside shadow trees distributed content', function() {
     host.shadowRoot.appendChild(document.createElement('slot'));
-    const distributedButton = document.createElement('button');
+    var distributedButton = document.createElement('button');
     distributedButton.textContent = 'Distributed button';
     host.appendChild(distributedButton);
     distributedButton.focus();

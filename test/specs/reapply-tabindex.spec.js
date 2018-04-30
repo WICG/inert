@@ -15,36 +15,36 @@ describe('Reapply existing tabindex', function() {
   });
 
   it('should reinstate pre-existing tabindex on setting inert=false', function() {
-    const container = fixture.el.querySelector('#container');
-    const tabindexes = new Map();
-    const focusableElements = new Set();
-    for (let el of Array.from(container.children)) {
+    var container = fixture.el.querySelector('#container');
+    var tabindexes = new Map();
+    var focusableElements = new Set();
+    Array.from(container.children).forEach(function(el) {
       if (el.hasAttribute('tabindex')) {
         tabindexes.set(el, el.getAttribute('tabindex'));
       }
       if (!isUnfocusable(el)) {
         focusableElements.add(el);
       }
-    }
+    });
 
     container.inert = true;
-    for (let focusableEl of focusableElements) {
+    focusableElements.forEach(function(focusableEl) {
       expect(isUnfocusable(focusableEl)).to.equal(true);
-    }
+    });
 
     container.inert = false;
-    for (let focusableEl of focusableElements) {
+    focusableElements.forEach(function(focusableEl) {
       expect(isUnfocusable(focusableEl)).to.equal(false);
-    }
+    });
 
-    for (let el of Array.from(container.children)) {
-      let tabindex = tabindexes.get(el);
+    Array.from(container.children).forEach(function(el) {
+      var tabindex = tabindexes.get(el);
       if (tabindex) {
         expect(el.hasAttribute('tabindex')).to.equal(true);
         expect(el.getAttribute('tabindex')).to.equal(tabindexes.get(el));
       } else {
         expect(el.hasAttribute('tabindex')).to.equal(false);
       }
-    }
+    });
   });
 });

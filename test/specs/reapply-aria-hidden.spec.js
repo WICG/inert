@@ -15,25 +15,25 @@ describe('reapply existing aria-hidden', function() {
   });
 
   it('should reinstate pre-existing aria-hidden on setting inert=false', function() {
-    const container = fixture.el.querySelector('#container');
-    const ariaHiddens = new Map();
-    for (let el of Array.from(container.children)) {
+    var container = fixture.el.querySelector('#container');
+    var ariaHiddens = new Map();
+    Array.from(container.children).forEach(function(el) {
       if (el.hasAttribute('aria-hidden')) {
         ariaHiddens.set(el, el.getAttribute('aria-hidden'));
       }
 
       el.inert = true;
       el.inert = false;
-    }
+    });
 
-    for (let el of Array.from(container.children)) {
-      let ariaHidden = ariaHiddens.get(el);
+    Array.from(container.children).forEach(function(el) {
+      var ariaHidden = ariaHiddens.get(el);
       if (ariaHidden) {
         expect(el.hasAttribute('aria-hidden')).to.equal(true);
         expect(el.getAttribute('aria-hidden')).to.equal(ariaHiddens.get(el));
       } else {
         expect(el.hasAttribute('aria-hidden')).to.equal(false);
       }
-    }
+    });
   });
 });
