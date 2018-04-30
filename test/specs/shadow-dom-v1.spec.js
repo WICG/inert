@@ -39,24 +39,24 @@ describe('ShadowDOM v1', function() {
     expect(isUnfocusable(shadowButton)).to.equal(true);
   });
 
-  it('should apply inert styles inside shadow trees', function() {
+  it('should apply inert styles inside shadow trees', function(done) {
     var shadowButton = document.createElement('button');
     shadowButton.textContent = 'Shadow button';
     host.shadowRoot.appendChild(shadowButton);
     shadowButton.focus();
     shadowButton.inert = true;
-    Promise.resolve().then(() => {
+    Promise.resolve().then(function() {
       expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
       done();
     });
   });
 
-  it('should apply inert styles inside shadow trees that aren\'t focused', function() {
+  it('should apply inert styles inside shadow trees that aren\'t focused', function(done) {
     var shadowButton = document.createElement('button');
     shadowButton.textContent = 'Shadow button';
     host.shadowRoot.appendChild(shadowButton);
     shadowButton.inert = true;
-    Promise.resolve().then(() => {
+    Promise.resolve().then(function() {
       expect(getComputedStyle(shadowButton).pointerEvents).to.equal('none');
       done();
     });
