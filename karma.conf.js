@@ -7,6 +7,7 @@ module.exports = function(config) {
       'karma-firefox-launcher',
       'karma-mocha',
       'karma-chai',
+      'karma-polyfill',
       'karma-spec-reporter',
       'karma-sourcemap-loader',
       'karma-fixture',
@@ -23,7 +24,11 @@ module.exports = function(config) {
     // https://mochajs.org/#exclusive-tests
     singleRun: true,
     // Use the mocha test framework with chai assertions.
-    frameworks: ['mocha', 'chai', 'fixture'],
+    // Use polyfills loaded from Polyfill.io.
+    // Use an html fixture loader.
+    frameworks: ['mocha', 'chai', 'polyfill', 'fixture'],
+    // List of polyfills to load from Polyfill.io.
+    polyfill: ['Promise', 'Map', 'Set', 'Element.prototype.matches'],
     preprocessors: {
       '**/*.html': ['html2js'],
     },
