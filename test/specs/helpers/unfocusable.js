@@ -14,7 +14,10 @@ function isUnfocusable(el) { // eslint-disable-line no-unused-vars
   if (document.activeElement === el) {
     return false;
   }
-  if (el.tabIndex !== -1) {
+  // Can't use tabIndex property here because Edge says a <div> has
+  // a tabIndex of 0 by default, even though calling focus() on it does
+  // not actually focus it.
+  if (el.hasAttribute('tabindex') && el.getAttribute('tabindex') === '0') {
     return false;
   }
   return true;
