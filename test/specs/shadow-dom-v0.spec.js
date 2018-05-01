@@ -1,6 +1,6 @@
 describe('ShadowDOM v0', function() {
   if (!Element.prototype.createShadowRoot) {
-    console.log('ShadowDOM v0 is not supported by the browser.');
+    // ShadowDOM v0 is not supported by the browser.
     return;
   }
 

@@ -83,7 +83,7 @@ module.exports = function(config) {
       'SL_Safari': {
         base: 'SauceLabs',
         browserName: 'safari',
-        platform: 'OS X 10.12',
+        platform: 'OS X 10.13',
         version: 'latest',
       },
       // 'SL_IE_9': {
@@ -98,12 +98,12 @@ module.exports = function(config) {
       //   platform: 'Windows 2012',
       //   version: '10',
       // },
-      'SL_IE_11': {
-        base: 'SauceLabs',
-        browserName: 'internet explorer',
-        platform: 'Windows 8.1',
-        version: '11',
-      },
+      // 'SL_IE_11': {
+      //   base: 'SauceLabs',
+      //   browserName: 'internet explorer',
+      //   platform: 'Windows 8.1',
+      //   version: '11',
+      // },
       'SL_EDGE': {
         base: 'SauceLabs',
         browserName: 'microsoftedge',
