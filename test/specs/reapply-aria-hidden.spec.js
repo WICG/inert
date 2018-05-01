@@ -1,4 +1,4 @@
-describe('reapply existing aria-hidden', function() {
+describe('Reapply existing aria-hidden', function() {
   before(function() {
     fixture.setBase('test/fixtures');
   });
