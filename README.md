@@ -55,8 +55,8 @@ If you want to use `inert` with an older browser you'll need to include
 additional polyfills for
 [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map),
 [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set),
-and
-[Element.prototype.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches).
+[Element.prototype.matches](https://developer.mozilla.org/en-US/docs/Web/API/Element/matches),
+and [Node.prototype.contains](https://developer.mozilla.org/en-US/docs/Web/API/Node/contains).
 
 In accordance with the W3C's new [polyfill
 guidance](https://www.w3.org/2001/tag/doc/polyfills/#don-t-serve-unnecessary-polyfills),
@@ -67,7 +67,7 @@ to download only the polyfills needed by the current browser. Just add the
 following line to the start of your page:
 
 ```html
-<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set,Element.prototype.matches"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set,Element.prototype.matches,Node.prototype.contains"></script>
 ```
 
 ### Performance and gotchas

@@ -28,7 +28,15 @@ module.exports = function(config) {
     // Use an html fixture loader.
     frameworks: ['mocha', 'chai', 'polyfill', 'fixture'],
     // List of polyfills to load from Polyfill.io.
-    polyfill: ['Array.from', 'Symbol', 'Promise', 'Map', 'Set', 'Element.prototype.matches'],
+    polyfill: [
+      'Array.from', // Used in tests.
+      'Symbol', // Used by babel transformed
+      'Promise',
+      'Map',
+      'Set',
+      'Element.prototype.matches',
+      'Node.prototype.contains',
+    ],
     preprocessors: {
       '**/*.html': ['html2js'],
     },

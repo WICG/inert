@@ -126,7 +126,7 @@ class InertRoot {
     composedTreeWalk(startNode, (node) => this._visitNode(node));
 
     let activeElement = document.activeElement;
-    if (!contains(document.body, startNode)) {
+    if (!document.body.contains(startNode)) {
       // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
       let node = startNode;
       let root = undefined;
@@ -141,7 +141,7 @@ class InertRoot {
         activeElement = root.activeElement;
       }
     }
-    if (contains(startNode, activeElement)) {
+    if (startNode.contains(activeElement)) {
       activeElement.blur();
     }
   }
@@ -242,7 +242,7 @@ class InertRoot {
           this._adoptInertRoot(target);
           const inertSubroot = this._inertManager.getInertRoot(target);
           for (let managedNode of this._managedNodes) {
-            if (contains(target, managedNode.node)) {
+            if (target.contains(managedNode.node)) {
               inertSubroot._manageNode(managedNode.node);
             }
           }
@@ -469,7 +469,7 @@ class InertManager {
       this._inertRoots.set(root, inertRoot);
       // If not contained in the document, it must be in a shadowRoot.
       // Ensure inert styles are added there.
-      if (!contains(this._document.body, root)) {
+      if (!this._document.body.contains(root)) {
         let parent = root.parentNode;
         while (parent) {
           if (parent.nodeType === 11) {
@@ -679,20 +679,6 @@ function addInertStyle(node) {
                       '  -ms-user-select: none;\n' +
                       '}\n';
   node.appendChild(style);
-}
-
-/**
- * `Node#contains()` polyfill.
- *
- * See: http://compatibility.shwups-cms.ch/en/polyfills/?&id=1
- *
- * @param {Node} node
- * @param {Node} other
- * @return {Boolean}
- * @public
- */
-function contains(node, other) {
-  return other && (node === other || !!(node.compareDocumentPosition(other) & 16) );
 }
 
 const inertManager = new InertManager(document);
