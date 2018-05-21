@@ -2,7 +2,7 @@
  * Quick and dirty logger to get info out of SauceLabs tests.
  */
 var LogLevels = {INFO: 'info', ERROR: 'error', NONE: 'none'};
-var LogLevel = LogLevels.NONE; // Set this to ERROR or NONE when not debugging.
+var LogLevel = LogLevels.INFO; // Set this to ERROR or NONE when not debugging.
 var LOG = {};
 LOG.info = function() {
   if (LogLevel === LogLevels.INFO) {

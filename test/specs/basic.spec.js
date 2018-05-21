@@ -70,6 +70,8 @@ describe('Basic', function() {
     Promise.resolve().then(function() {
       expect(isUnfocusable(newButton)).to.equal(true);
       done();
+    }).catch(function(err) {
+      console.log(err);
     });
   });
 
