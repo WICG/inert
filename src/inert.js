@@ -126,6 +126,8 @@ class InertRoot {
     composedTreeWalk(startNode, (node) => this._visitNode(node));
 
     let activeElement = document.activeElement;
+    let oldActiveElement = activeElement;
+
     if (!document.body.contains(startNode)) {
       // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
       let node = startNode;
@@ -143,6 +145,12 @@ class InertRoot {
     }
     if (startNode.contains(activeElement)) {
       activeElement.blur();
+    }
+    // In IE11, if an element is already focused, and then set to tabindex=-1
+    // calling blur() will not actually move the focus.
+    // To work around this we call focus() on the body instead.
+    if (oldActiveElement === document.activeElement) {
+      document.body.focus();
     }
   }
 
