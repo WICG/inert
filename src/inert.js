@@ -207,7 +207,7 @@ class InertRoot {
       inertSubroot = this._inertManager.getInertRoot(node);
     }
 
-    inertSubroot.managedNodes.forEach(function() {
+    inertSubroot.managedNodes.forEach(function(savedInertNode) {
       this._manageNode(savedInertNode.node);
     }.bind(this));
   }
