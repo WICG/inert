@@ -88,9 +88,9 @@ class InertRoot {
     }
     this._rootElement = null;
 
-    for (let inertNode of this._managedNodes) {
+    this._managedNodes.forEach(function(inertNode) {
       this._unmanageNode(inertNode.node);
-    }
+    }.bind(this));
 
     this._managedNodes = null;
 
@@ -207,9 +207,9 @@ class InertRoot {
       inertSubroot = this._inertManager.getInertRoot(node);
     }
 
-    for (let savedInertNode of inertSubroot.managedNodes) {
+    inertSubroot.managedNodes.forEach(function() {
       this._manageNode(savedInertNode.node);
-    }
+    }.bind(this));
   }
 
   /**
@@ -218,18 +218,18 @@ class InertRoot {
    * @param {MutationObserver} self
    */
   _onMutation(records, self) {
-    for (let record of records) {
+    records.forEach(function(record) {
       const target = record.target;
       if (record.type === 'childList') {
         // Manage added nodes
-        for (let node of slice.call(record.addedNodes)) {
+        slice.call(record.addedNodes).forEach(function(node) {
           this._makeSubtreeUnfocusable(node);
-        }
+        }.bind(this));
 
         // Un-manage removed nodes
-        for (let node of slice.call(record.removedNodes)) {
+        slice.call(record.removedNodes).forEach(function(node) {
           this._unmanageSubtree(node);
-        }
+        }.bind(this));
       } else if (record.type === 'attributes') {
         if (record.attributeName === 'tabindex') {
           // Re-initialise inert node if tabindex changes
@@ -241,14 +241,14 @@ class InertRoot {
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
           const inertSubroot = this._inertManager.getInertRoot(target);
-          for (let managedNode of this._managedNodes) {
+          this._managedNodes.forEach(function(managedNode) {
             if (target.contains(managedNode.node)) {
               inertSubroot._manageNode(managedNode.node);
             }
-          }
+          });
         }
       }
-    }
+    }.bind(this));
   }
 }
 
@@ -551,9 +551,9 @@ class InertManager {
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
     const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
-    for (let inertElement of inertElements) {
+    inertElements.forEach(function(inertElement) {
       this.setInert(inertElement, true);
-    }
+    }.bind(this));
 
     // Comment this out to use programmatic API only.
     this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
@@ -565,32 +565,32 @@ class InertManager {
    * @param {MutationObserver} self
    */
   _watchForInert(records, self) {
-    for (let record of records) {
+    records.forEach(function(record) {
       switch (record.type) {
       case 'childList':
-        for (let node of slice.call(record.addedNodes)) {
+        slice.call(record.addedNodes).forEach(function(node) {
           if (node.nodeType !== Node.ELEMENT_NODE) {
-            continue;
+            return;
           }
           const inertElements = slice.call(node.querySelectorAll('[inert]'));
           if (node.matches('[inert]')) {
             inertElements.unshift(node);
           }
-          for (let inertElement of inertElements) {
+          inertElements.forEach(function(inertElement) {
             this.setInert(inertElement, true);
-          }
-        }
+          }.bind(this));
+        }.bind(this));
         break;
       case 'attributes':
         if (record.attributeName !== 'inert') {
-          continue;
+          return;
         }
         const target = record.target;
         const inert = target.hasAttribute('inert');
         this.setInert(target, inert);
         break;
       }
-    }
+    }.bind(this));
   }
 }
 
