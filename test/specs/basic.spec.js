@@ -3,11 +3,13 @@ describe('Basic', function() {
     fixture.setBase('test/fixtures');
   });
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     fixture.load('basic.html');
     // Because inert relies on MutationObservers,
     // wait till next microtask before running tests.
-    return Promise.resolve();
+    setTimeout(function() {
+      done();
+    }, 0);
   });
 
   afterEach(function() {
@@ -67,12 +69,10 @@ describe('Basic', function() {
     var inertContainer = fixture.el.querySelector('[inert]');
     inertContainer.appendChild(newButton);
     // Wait for the next microtask to allow mutation observers to react to the DOM change
-    Promise.resolve().then(function() {
+    setTimeout(function() {
       expect(isUnfocusable(newButton)).to.equal(true);
       done();
-    }).catch(function(err) {
-      console.log(err);
-    });
+    }, 0);
   });
 
   it('should be detected on dynamically added content', function(done) {
@@ -81,11 +81,11 @@ describe('Basic', function() {
     temp.outerHTML = '<div id="inert2" inert><button>Click me</button></div>';
     var div = fixture.el.querySelector('#inert2');
     // Wait for the next microtask to allow mutation observers to react to the DOM change
-    Promise.resolve().then(function() {
+    setTimeout(function() {
       expect(div.inert).to.equal(true);
       var button = div.querySelector('button');
       expect(isUnfocusable(button)).to.equal(true);
       done();
-    });
+    }, 0);
   });
 });

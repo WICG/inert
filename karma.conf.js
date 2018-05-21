@@ -30,7 +30,6 @@ module.exports = function(config) {
     // List of polyfills to load from Polyfill.io.
     polyfill: [
       'Array.from', // Used in tests.
-      'Symbol', // Used by babel transformed
       'Promise',
       'Map',
       'Set',
@@ -55,7 +54,7 @@ module.exports = function(config) {
   });
 
   // If we're on Travis, override config settings and run tests on SauceLabs.
-  if (process.env.TRAVIS) {
+  if (process.env.TRAVIS || process.env.SAUCE) {
     // List of browsers to test on SauceLabs.
     // To add more browsers, use:
     // https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/

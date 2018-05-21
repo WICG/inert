@@ -3,11 +3,13 @@ describe('Reapply existing aria-hidden', function() {
     fixture.setBase('test/fixtures');
   });
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     fixture.load('aria-hidden.html');
     // Because inert relies on MutationObservers,
     // wait till next microtask before running tests.
-    return Promise.resolve();
+    setTimeout(function() {
+      done();
+    }, 0);
   });
 
   afterEach(function() {

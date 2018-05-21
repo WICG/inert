@@ -3,11 +3,13 @@ describe('Nested inert regions', function() {
     fixture.setBase('test/fixtures');
   });
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     fixture.load('nested.html');
     // Because inert relies on MutationObservers,
     // wait till next microtask before running tests.
-    return Promise.resolve();
+    setTimeout(function() {
+      done();
+    }, 0);
   });
 
   afterEach(function() {
@@ -61,7 +63,8 @@ describe('Nested inert regions', function() {
     expect(temp.parentElement).to.eql(outerContainer);
     temp.outerHTML = '<div id="inner2" inert><button>Click me</button></div>';
     var div = outerContainer.querySelector('#inner2');
-    Promise.resolve().then(function() {
+    // Wait for the next microtask to allow mutation observers to react to the DOM change
+    setTimeout(function() {
       expect(div.inert).to.equal(true);
       var button = div.querySelector('button');
       expect(isUnfocusable(button)).to.equal(true);
@@ -71,6 +74,6 @@ describe('Nested inert regions', function() {
       expect(div.inert).to.equal(true);
       expect(isUnfocusable(button)).to.equal(true);
       done();
-    });
+    }, 0);
   });
 });
