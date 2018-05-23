@@ -123,16 +123,16 @@ module.exports = function(config) {
         platform: 'Windows 10',
         version: 'latest-1',
       },
-      'SL_iOS_10': {
-        base: 'SauceLabs',
-        browserName: 'iphone',
-        version: '10.3',
-      },
-      'SL_iOS_11': {
-        base: 'SauceLabs',
-        browserName: 'iphone',
-        version: '11',
-      },
+      // 'SL_iOS_10': {
+      //   base: 'SauceLabs',
+      //   browserName: 'iphone',
+      //   version: '10.3',
+      // },
+      // 'SL_iOS_11': {
+      //   base: 'SauceLabs',
+      //   browserName: 'iphone',
+      //   version: '11',
+      // },
     };
 
     config.set({
