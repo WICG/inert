@@ -90,7 +90,7 @@ class InertRoot {
 
     this._managedNodes.forEach(function(inertNode) {
       this._unmanageNode(inertNode.node);
-    }.bind(this));
+    }, this);
 
     this._managedNodes = null;
 
@@ -217,7 +217,7 @@ class InertRoot {
 
     inertSubroot.managedNodes.forEach(function(savedInertNode) {
       this._manageNode(savedInertNode.node);
-    }.bind(this));
+    }, this);
   }
 
   /**
@@ -232,12 +232,12 @@ class InertRoot {
         // Manage added nodes
         slice.call(record.addedNodes).forEach(function(node) {
           this._makeSubtreeUnfocusable(node);
-        }.bind(this));
+        }, this);
 
         // Un-manage removed nodes
         slice.call(record.removedNodes).forEach(function(node) {
           this._unmanageSubtree(node);
-        }.bind(this));
+        }, this);
       } else if (record.type === 'attributes') {
         if (record.attributeName === 'tabindex') {
           // Re-initialise inert node if tabindex changes
@@ -256,7 +256,7 @@ class InertRoot {
           });
         }
       }
-    }.bind(this));
+    }, this);
   }
 }
 
@@ -561,7 +561,7 @@ class InertManager {
     const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
     inertElements.forEach(function(inertElement) {
       this.setInert(inertElement, true);
-    }.bind(this));
+    }, this);
 
     // Comment this out to use programmatic API only.
     this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
@@ -586,8 +586,8 @@ class InertManager {
           }
           inertElements.forEach(function(inertElement) {
             this.setInert(inertElement, true);
-          }.bind(this));
-        }.bind(this));
+          }, this);
+        }, this);
         break;
       case 'attributes':
         if (record.attributeName !== 'inert') {
@@ -598,7 +598,7 @@ class InertManager {
         this.setInert(target, inert);
         break;
       }
-    }.bind(this));
+    }, this);
   }
 }
 
