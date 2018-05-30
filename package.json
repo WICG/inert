@@ -5,7 +5,7 @@
   "main": "dist/inert.js",
   "scripts": {
     "build": "rollup -c",
-    "prepublishOnly": "npm run test",
+    "prepublishOnly": "SAUCE=true npm run test",
     "test": "npm run build && karma start"
   },
   "repository": {
