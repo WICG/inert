@@ -2,11 +2,25 @@
 This work is licensed under the W3C Software and Document License
 (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
 -->
-<div id="outer" inert>
-  <button id="outer-button">Click me</button>
-  <div id="outer-fake-button" tabindex="0">Click me</div>
-  <div id="inner" inert>
-    <button id="inner-button">Click me</button>
-    <div id="inner-fake-button" tabindex="0">Click me</div>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>nested fixture</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <div id="outer" inert>
+    <button id="outer-button">Click me</button>
+    <div id="outer-fake-button" tabindex="0">Click me</div>
+    <div id="inner" inert>
+      <button id="inner-button">Click me</button>
+      <div id="inner-fake-button" tabindex="0">Click me</div>
+    </div>
   </div>
-</div>
+</body>
+
+</html>

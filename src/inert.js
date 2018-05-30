@@ -3,7 +3,6 @@
  * (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
  */
 
-(function(document) {
 // Convenience function for converting NodeLists.
 /** @type {function(number,number):Array} */
 const slice = Array.prototype.slice;
@@ -89,9 +88,9 @@ class InertRoot {
     }
     this._rootElement = null;
 
-    for (let inertNode of this._managedNodes) {
+    this._managedNodes.forEach(function(inertNode) {
       this._unmanageNode(inertNode.node);
-    }
+    }, this);
 
     this._managedNodes = null;
 
@@ -127,7 +126,8 @@ class InertRoot {
     composedTreeWalk(startNode, (node) => this._visitNode(node));
 
     let activeElement = document.activeElement;
-    if (!contains(document.body, startNode)) {
+
+    if (!document.body.contains(startNode)) {
       // startNode may be in shadow DOM, so find its nearest shadowRoot to get the activeElement.
       let node = startNode;
       let root = undefined;
@@ -142,8 +142,14 @@ class InertRoot {
         activeElement = root.activeElement;
       }
     }
-    if (contains(startNode, activeElement)) {
+    if (startNode.contains(activeElement)) {
       activeElement.blur();
+      // In IE11, if an element is already focused, and then set to tabindex=-1
+      // calling blur() will not actually move the focus.
+      // To work around this we call focus() on the body instead.
+      if (activeElement === document.activeElement) {
+        document.body.focus();
+      }
     }
   }
 
@@ -208,9 +214,9 @@ class InertRoot {
       inertSubroot = this._inertManager.getInertRoot(node);
     }
 
-    for (let savedInertNode of inertSubroot.managedNodes) {
+    inertSubroot.managedNodes.forEach(function(savedInertNode) {
       this._manageNode(savedInertNode.node);
-    }
+    }, this);
   }
 
   /**
@@ -219,18 +225,18 @@ class InertRoot {
    * @param {MutationObserver} self
    */
   _onMutation(records, self) {
-    for (let record of records) {
+    records.forEach(function(record) {
       const target = record.target;
       if (record.type === 'childList') {
         // Manage added nodes
-        for (let node of slice.call(record.addedNodes)) {
+        slice.call(record.addedNodes).forEach(function(node) {
           this._makeSubtreeUnfocusable(node);
-        }
+        }, this);
 
         // Un-manage removed nodes
-        for (let node of slice.call(record.removedNodes)) {
+        slice.call(record.removedNodes).forEach(function(node) {
           this._unmanageSubtree(node);
-        }
+        }, this);
       } else if (record.type === 'attributes') {
         if (record.attributeName === 'tabindex') {
           // Re-initialise inert node if tabindex changes
@@ -242,14 +248,14 @@ class InertRoot {
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
           const inertSubroot = this._inertManager.getInertRoot(target);
-          for (let managedNode of this._managedNodes) {
-            if (contains(target, managedNode.node)) {
+          this._managedNodes.forEach(function(managedNode) {
+            if (target.contains(managedNode.node)) {
               inertSubroot._manageNode(managedNode.node);
             }
-          }
+          });
         }
       }
-    }
+    }, this);
   }
 }
 
@@ -470,7 +476,7 @@ class InertManager {
       this._inertRoots.set(root, inertRoot);
       // If not contained in the document, it must be in a shadowRoot.
       // Ensure inert styles are added there.
-      if (!contains(this._document.body, root)) {
+      if (!this._document.body.contains(root)) {
         let parent = root.parentNode;
         while (parent) {
           if (parent.nodeType === 11) {
@@ -552,9 +558,9 @@ class InertManager {
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
     const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
-    for (let inertElement of inertElements) {
+    inertElements.forEach(function(inertElement) {
       this.setInert(inertElement, true);
-    }
+    }, this);
 
     // Comment this out to use programmatic API only.
     this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
@@ -566,32 +572,32 @@ class InertManager {
    * @param {MutationObserver} self
    */
   _watchForInert(records, self) {
-    for (let record of records) {
+    records.forEach(function(record) {
       switch (record.type) {
       case 'childList':
-        for (let node of slice.call(record.addedNodes)) {
+        slice.call(record.addedNodes).forEach(function(node) {
           if (node.nodeType !== Node.ELEMENT_NODE) {
-            continue;
+            return;
           }
           const inertElements = slice.call(node.querySelectorAll('[inert]'));
           if (node.matches('[inert]')) {
             inertElements.unshift(node);
           }
-          for (let inertElement of inertElements) {
+          inertElements.forEach(function(inertElement) {
             this.setInert(inertElement, true);
-          }
-        }
+          }, this);
+        }, this);
         break;
       case 'attributes':
         if (record.attributeName !== 'inert') {
-          continue;
+          return;
         }
         const target = record.target;
         const inert = target.hasAttribute('inert');
         this.setInert(target, inert);
         break;
       }
-    }
+    }, this);
   }
 }
 
@@ -682,20 +688,6 @@ function addInertStyle(node) {
   node.appendChild(style);
 }
 
-/**
- * `Node#contains()` polyfill.
- *
- * See: http://compatibility.shwups-cms.ch/en/polyfills/?&id=1
- *
- * @param {Node} node
- * @param {Node} other
- * @return {Boolean}
- * @public
- */
-function contains(node, other) {
-  return other && (node === other || !!(node.compareDocumentPosition(other) & 16) );
-}
-
 const inertManager = new InertManager(document);
 
 Object.defineProperty(Element.prototype, 'inert', {
@@ -707,4 +699,3 @@ Object.defineProperty(Element.prototype, 'inert', {
                           inertManager.setInert(this, inert);
                         },
                       });
-})(document);
