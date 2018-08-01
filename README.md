@@ -110,3 +110,12 @@ for older browsers. There are a few modern features they rely upon, e.g.
 `Array.from` and `Promises`. These are polyfilled for the tests using
 [Polyfill.io](http://polyfill.io/). For a list of polyfilled features, check out
 the `polyfill` section in `karma.conf.js`.
+
+### Big Thanks
+
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs][homepage]
+
+<a href="https://saucelabs.com"><img src="https://i.imgur.com/f2cK9ZQ.jpg" width="200"></a>
+
+[homepage]: https://saucelabs.com
+
