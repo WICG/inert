@@ -7,6 +7,7 @@ export default [
     output: {
       file: 'dist/inert.js',
       format: 'umd',
+      name: 'inert'
     },
     plugins: [
       babel({
@@ -19,6 +20,7 @@ export default [
     output: {
       file: 'dist/inert.min.js',
       format: 'umd',
+      name: 'inert',
       sourcemap: true,
     },
     plugins: [
