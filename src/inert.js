@@ -230,8 +230,14 @@ class InertRoot {
       if (record.type === 'childList') {
         // Manage added nodes
         slice.call(record.addedNodes).forEach(function(node) {
+          this._newElementsAdded = true;
           this._makeSubtreeUnfocusable(node);
         }, this);
+        if (record.addedNodes.length) {
+          setTimeout(() => {
+            this._newElementsAdded = false;
+          });
+        }
 
         // Un-manage removed nodes
         slice.call(record.removedNodes).forEach(function(node) {
@@ -240,7 +246,9 @@ class InertRoot {
       } else if (record.type === 'attributes') {
         if (record.attributeName === 'tabindex') {
           // Re-initialise inert node if tabindex changes
-          this._manageNode(target);
+          if (!this._newElementsAdded) {
+            this._manageNode(target);
+          }
         } else if (target !== this._rootElement &&
                    record.attributeName === 'inert' &&
                    target.hasAttribute('inert')) {
