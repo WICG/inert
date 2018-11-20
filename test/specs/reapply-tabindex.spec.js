@@ -49,4 +49,20 @@ describe('Reapply existing tabindex', function() {
       }
     });
   });
+
+  it('should set properly tabindex for elements added later in the inert root', function(done) {
+    var divRoot = document.createElement('div');
+    divRoot.inert = true;
+    var button1 = document.createElement('button');
+    var button2 = document.createElement('button');
+    divRoot.appendChild(button1);
+    divRoot.appendChild(button2); // we need to add at least two focusable elements in order for the test to pass
+    // adding a timeout in order to enter the next event loop, due to the mutationObserver events
+    setTimeout(function() {
+      divRoot.inert = false;
+      expect(button1.tabIndex).to.equal(0);
+      expect(button2.tabIndex).to.equal(0);
+      done();
+    });
+  });
 });
