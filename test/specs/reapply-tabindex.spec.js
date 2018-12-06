@@ -62,7 +62,7 @@ describe('Reapply existing tabindex', function() {
         expect(button.tabIndex).to.equal(-1);
 
         divRoot.inert = false;
-        expect(button1.tabIndex).to.equal(0);
+        expect(button.tabIndex).to.equal(0);
         done();
       });
     });
