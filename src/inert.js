@@ -518,8 +518,6 @@ class InertManager {
     let inertNode = this._managedNodes.get(node);
     if (inertNode !== undefined) { // node was already in an inert subtree
       inertNode.addInertRoot(inertRoot);
-      // Update saved tabindex value if necessary
-      inertNode.ensureUntabbable();
     } else {
       inertNode = new InertNode(node, inertRoot);
     }

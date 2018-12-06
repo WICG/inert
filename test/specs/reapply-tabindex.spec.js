@@ -49,4 +49,21 @@ describe('Reapply existing tabindex', function() {
       }
     });
   });
+
+  it('should set tabindex correctly for elements added later in the inert root', function(done) {
+      var divRoot = document.createElement('div');
+      document.body.appendChild(divRoot);
+      divRoot.inert = true;
+      var button = document.createElement('button');
+      divRoot.appendChild(button);
+
+      // adding a timeout in order to enter the next event loop, due to the mutationObserver events
+      setTimeout(function() {
+        expect(button.tabIndex).to.equal(-1);
+
+        divRoot.inert = false;
+        expect(button.tabIndex).to.equal(0);
+        done();
+      });
+    });
 });
