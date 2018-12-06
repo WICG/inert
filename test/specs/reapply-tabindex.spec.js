@@ -59,7 +59,7 @@ describe('Reapply existing tabindex', function() {
 
       // adding a timeout in order to enter the next event loop, due to the mutationObserver events
       setTimeout(function() {
-        expect(button1.tabIndex).to.equal(-1);
+        expect(button.tabIndex).to.equal(-1);
 
         divRoot.inert = false;
         expect(button1.tabIndex).to.equal(0);
