@@ -55,7 +55,7 @@ describe('Reapply existing tabindex', function() {
       document.body.appendChild(divRoot);
       divRoot.inert = true;
       var button = document.createElement('button');
-      divRoot.appendChild(button1);
+      divRoot.appendChild(button);
 
       // adding a timeout in order to enter the next event loop, due to the mutationObserver events
       setTimeout(function() {
