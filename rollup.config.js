@@ -7,6 +7,9 @@ export default [
     output: {
       file: 'dist/inert.js',
       format: 'umd',
+      amd: {
+        id: 'inert'
+      }
     },
     plugins: [
       babel({
@@ -19,6 +22,9 @@ export default [
     output: {
       file: 'dist/inert.min.js',
       format: 'umd',
+      amd: {
+        id: 'inert'
+      },
       sourcemap: true,
     },
     plugins: [
