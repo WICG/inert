@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/WICG/inert.svg?branch=master)](https://travis-ci.org/WICG/inert)
-[![Greenkeeper badge](https://badges.greenkeeper.io/WICG/inert.svg)](https://greenkeeper.io/)
 
 The `inert` attribute/property allows web authors to mark parts of the DOM tree
 as [inert](https://html.spec.whatwg.org/multipage/interaction.html#inert):
