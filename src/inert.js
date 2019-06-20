@@ -690,12 +690,12 @@ const inertManager = new InertManager(document);
 
 if (!Element.prototype.hasOwnProperty('inert')) {
   Object.defineProperty(Element.prototype, 'inert', {
-                          enumerable: true,
-                          get: function() {
-                            return this.hasAttribute('inert');
-                          },
-                          set: function(inert) {
-                            inertManager.setInert(this, inert);
-                          },
-                        });
+    enumerable: true,
+    get: function() {
+      return this.hasAttribute('inert');
+    },
+    set: function(inert) {
+      inertManager.setInert(this, inert);
+    },
+  });
 }
