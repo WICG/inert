@@ -688,12 +688,14 @@ function addInertStyle(node) {
 
 const inertManager = new InertManager(document);
 
-Object.defineProperty(Element.prototype, 'inert', {
-                        enumerable: true,
-                        get: function() {
-                          return this.hasAttribute('inert');
-                        },
-                        set: function(inert) {
-                          inertManager.setInert(this, inert);
-                        },
-                      });
+if (!Element.prototype.hasOwnProperty('inert')) {
+  Object.defineProperty(Element.prototype, 'inert', {
+    enumerable: true,
+    get: function() {
+      return this.hasAttribute('inert');
+    },
+    set: function(inert) {
+      inertManager.setInert(this, inert);
+    },
+  });
+}
