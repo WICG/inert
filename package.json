@@ -31,6 +31,7 @@
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-es3": "^1.0.1",
     "chai": "^4.1.2",
     "eslint": "^5.0.0",
     "eslint-config-google": "^0.9.1",
