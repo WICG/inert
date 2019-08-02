@@ -12,6 +12,7 @@
       "code": 100,
       "tabWidth": 2,
       "ignoreUrls": true
-    }]
+    }],
+    "linebreak-style": ["error", "windows"]
   }
 }

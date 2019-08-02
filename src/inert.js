@@ -467,6 +467,12 @@ class InertManager {
      */
     this._observer = new MutationObserver(this._watchForInert.bind(this));
 
+    /**
+     * Selector for elements that should be inerted
+     * @type string
+     * */
+    this._inertSelector = '[inert], [data-inert]';
+
     // Add inert style.
     addInertStyle(document.head || document.body || document.documentElement);
 
@@ -573,7 +579,7 @@ class InertManager {
    */
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
-    const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
+    const inertElements = slice.call(this._document.querySelectorAll(this._inertSelector));
     inertElements.forEach(function(inertElement) {
       this.setInert(inertElement, true);
     }, this);
@@ -596,8 +602,8 @@ class InertManager {
           if (node.nodeType !== Node.ELEMENT_NODE) {
             return;
           }
-          const inertElements = slice.call(node.querySelectorAll('[inert]'));
-          if (node.matches('[inert]')) {
+          const inertElements = slice.call(node.querySelectorAll(this._inertSelector));
+          if (node.matches(this._inertSelector)) {
             inertElements.unshift(node);
           }
           inertElements.forEach(function(inertElement) {
@@ -691,12 +697,12 @@ function addInertStyle(node) {
   const style = document.createElement('style');
   style.setAttribute('id', 'inert-style');
   style.textContent = '\n'+
-                      '[inert] {\n' +
+                      '[inert], [data-inert] {\n' +
                       '  pointer-events: none;\n' +
                       '  cursor: default;\n' +
                       '}\n' +
                       '\n' +
-                      '[inert], [inert] * {\n' +
+                      '[inert], [data-inert], [inert] *, [data-inert] * {\n' +
                       '  user-select: none;\n' +
                       '  -webkit-user-select: none;\n' +
                       '  -moz-user-select: none;\n' +
