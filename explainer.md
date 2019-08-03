@@ -141,7 +141,7 @@ implementers may get useful functionality into the hands of developers sooner wh
   + Any of the use cases for [`blockingElement[s]`](https://github.com/whatwg/html/issues/897):
     * a modal dialog;
     * a focus-trapping menu;
-    * a [side nav](https://material.google.com/patterns/navigation-drawer.html).
+    * a [side nav](https://material.io/design/components/navigation-drawer.html).
 
   + A slide show or "cover flow" style carousel may have non-active items partially visible,
   as a preview -
