@@ -1,9 +1,9 @@
 - [Background](#background)
 - [Spec](#spec)
   * [Spec gaps](#spec-gaps)
-- [The case for `inert` as a primitive](#the-case-for--inert--as-a-primitive)
+- [The case for `inert` as a primitive](#the-case-for-inert-as-a-primitive)
   * [Use cases](#use-cases)
-- [Wouldn't this be better as...](#wouldn-t-this-be-better-as)
+- [Wouldn't this be better as...](#wouldnt-this-be-better-as)
 
 # Background
 
@@ -51,7 +51,7 @@ is extremely straightforward:
 however it is implied by the note that `inert` causes the entire subtree of the element with the `inert` attribute to be made [_inert_](https://html.spec.whatwg.org/multipage/interaction.html#inert).
 The polyfill makes the assumption that the entire subtree becomes _inert_.
   - Furthermore, the spec is unclear as to whether the attribute applies into [shadow trees](https://dom.spec.whatwg.org/#concept-shadow-tree).
-  Consistency with CSS attributes and with inheriting attributes like [`aria-hidden`](https://www.w3.org/TR/wai-aria/states_and_properties#aria-hidden) and [`lang`](http://w3c.github.io/html/dom.html#the-lang-and-xmllang-attributes) imply that it should.
+  Consistency with CSS attributes and with inheriting attributes like [`aria-hidden`](https://www.w3.org/TR/wai-aria/#aria-hidden) and [`lang`](https://html.spec.whatwg.org/multipage/dom.html#the-lang-and-xml:lang-attributes) imply that it should.
   The polyfill assumes that it does so.
 - The [existing description of _inert_](https://html.spec.whatwg.org/multipage/interaction.html#inert) is not specific about where pointer events which would have been targeted to an element in an inert subtree should go.
   (See also: discussion on the [WHATWG pull request](https://github.com/whatwg/html/pull/1474).)
@@ -63,7 +63,7 @@ The polyfill makes the assumption that the entire subtree becomes _inert_.
   3. simply not fire?
 
   Consistency with `pointer-events` would suggest (ii). The polyfill uses `pointer-events: none` and so models its behaviour.
-- The spec is also not explicit about whether the attribute should be [reflected](http://w3c.github.io/html/infrastructure.html#reflection). The polyfill assumes that it is.
+- The spec is also not explicit about whether the attribute should be [reflected](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#reflecting-content-attributes-in-idl-attributes). The polyfill assumes that it is.
 - The spec does not explicitly state that inert content should be [hidden from assistive technology](https://www.w3.org/WAI/PF/aria-implementation/#exclude_elements2).
 However, typically, the HTML spec does not provide this type of information. The polyfill makes _inert_ content hidden from assistive technology (via `aria-hidden`).
 - The spec does not make explicit that there is no way to "un-inert" a subtree of an inert subtree.
@@ -141,7 +141,7 @@ implementers may get useful functionality into the hands of developers sooner wh
   + Any of the use cases for [`blockingElement[s]`](https://github.com/whatwg/html/issues/897):
     * a modal dialog;
     * a focus-trapping menu;
-    * a [side nav](https://material.google.com/patterns/navigation-drawer.html).
+    * a [side nav](https://material.io/design/components/navigation-drawer.html).
 
   + A slide show or "cover flow" style carousel may have non-active items partially visible,
   as a preview -

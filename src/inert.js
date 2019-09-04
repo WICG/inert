@@ -7,6 +7,13 @@
 /** @type {typeof Array.prototype.slice} */
 const slice = Array.prototype.slice;
 
+/**
+ * IE has a non-standard name for "matches".
+ * @type {typeof Element.prototype.matches}
+ */
+const matches =
+    Element.prototype.matches || Element.prototype.msMatchesSelector;
+
 /** @type {string} */
 const _focusableElementsString = ['a[href]',
                                   'area[href]',
@@ -177,7 +184,7 @@ class InertRoot {
       this._adoptInertRoot(element);
     }
 
-    if (element.matches(_focusableElementsString) || element.hasAttribute('tabindex')) {
+    if (matches.call(element, _focusableElementsString) || element.hasAttribute('tabindex')) {
       this._manageNode(element);
     }
   }
@@ -384,7 +391,7 @@ class InertNode {
       return;
     }
     const element = /** @type {!Element} */ (this.node);
-    if (element.matches(_focusableElementsString)) {
+    if (matches.call(element, _focusableElementsString)) {
       if (/** @type {!HTMLElement} */ (element).tabIndex === -1 &&
           this.hasSavedTabIndex) {
         return;
@@ -603,7 +610,7 @@ class InertManager {
             return;
           }
           const inertElements = slice.call(node.querySelectorAll(this._inertSelector));
-          if (node.matches(this._inertSelector)) {
+          if (matches.call(node, this._inertSelector)) {
             inertElements.unshift(node);
           }
           inertElements.forEach(function(inertElement) {
