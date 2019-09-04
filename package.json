@@ -1,6 +1,6 @@
 {
   "name": "wicg-inert",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "A polyfill for the proposed inert API",
   "main": "dist/inert.js",
   "module": "src/inert.js",
