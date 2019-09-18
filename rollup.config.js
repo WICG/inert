@@ -5,11 +5,23 @@ export default [
   {
     input: 'src/inert.js',
     output: {
+      file: 'dist/inert.esm.js',
+      format: 'esm',
+    },
+    plugins: [
+      babel({
+        exclude: 'node_modules/**',
+      }),
+    ],
+  },
+  {
+    input: 'src/inert.js',
+    output: {
       file: 'dist/inert.js',
       format: 'umd',
       amd: {
-        id: 'inert'
-      }
+        id: 'inert',
+      },
     },
     plugins: [
       babel({
@@ -23,7 +35,7 @@ export default [
       file: 'dist/inert.min.js',
       format: 'umd',
       amd: {
-        id: 'inert'
+        id: 'inert',
       },
       sourcemap: true,
     },
