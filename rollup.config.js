@@ -5,18 +5,6 @@ export default [
   {
     input: 'src/inert.js',
     output: {
-      file: 'dist/inert.esm.js',
-      format: 'esm',
-    },
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-      }),
-    ],
-  },
-  {
-    input: 'src/inert.js',
-    output: {
       file: 'dist/inert.js',
       format: 'umd',
       amd: {
