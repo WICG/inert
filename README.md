@@ -24,15 +24,28 @@ technology.
 
 `npm install --save wicg-inert`
 
-_We recommend only using versions of the polyfill that have been published to npm, rather than
-cloning the repo and using the source directly. This helps ensure the version you're using is stable
-and thoroughly tested._
+We recommend only using versions of the polyfill that have been published to
+npm, rather than cloning the repo and using the source directly. This helps
+ensure the version you're using is stable and thoroughly tested.
+
+This project provides two versions of the polyfill in `package.json`.
+
+- `main`: Points at `dist/inert.js` which is transpiled to ES3.
+- `module`: Points at `src/inert.js` which is _not_ transpiled and uses modern
+  JavaScript. See [#136](https://github.com/WICG/inert/issues/136) if
+  you would like to tell webpack to use the version in `main`.
 
 _If you do want to build from source, make sure you clone the latest tag!_
 
 ## Usage
 
-### 1. Add the script to your page
+### 1. Either import the polyfill, or add the script to your page
+
+```
+import "wicg-inert";
+```
+
+OR…
 
 ```html
     ...
