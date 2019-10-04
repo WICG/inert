@@ -645,7 +645,7 @@ class InertManager {
         }, _this);
         break;
       case 'attributes':
-        if (InertManager.isValidMutationRecord(record)) {
+        if (!InertManager.isValidMutationRecord(record)) {
           return;
         }
         const target = /** @type {!Element} */ (record.target);
