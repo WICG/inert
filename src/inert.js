@@ -180,8 +180,7 @@ class InertRoot {
 
     // If a descendant inert root becomes un-inert, its descendants will still be inert because of
     // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
-    if (element !== this._rootElement &&
-        (element.hasAttribute('inert') || element.hasAttribute('data-inert'))) {
+    if (element !== this._rootElement && InertManager.hasInertAttribute(element)) {
       this._adoptInertRoot(element);
     }
 
@@ -260,8 +259,8 @@ class InertRoot {
           // Re-initialise inert node if tabindex changes
           this._manageNode(target);
         } else if (target !== this._rootElement &&
-                  (record.attributeName === 'inert' || record.attributeName === 'data-inert') &&
-                  (target.hasAttribute('inert') || target.hasAttribute('data-inert'))) {
+                  InertManager.isValidMutationRecord(record) &&
+                  InertManager.hasInertAttribute(target)) {
           // If a new inert root is added, adopt its managed nodes and make sure it knows about the
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
@@ -481,6 +480,12 @@ class InertManager {
      * */
     this._inertSelector = '[inert], [data-inert]';
 
+    /**
+     * Attribute names for inerted elements
+     * @type string[]
+     */
+    this._inertAttributes = ['inert', 'data-inert'];
+
     // Add inert style.
     addInertStyle(document.head || document.body || document.documentElement);
 
@@ -490,6 +495,24 @@ class InertManager {
     } else {
       this._onDocumentLoaded();
     }
+  }
+
+
+  /**
+   * @param {!Element} el
+   * @return {boolean}
+   */
+  static hasInertAttribute(el) {
+    return el.hasAttribute('inert') || el.hasAttribute('data-inert');
+  }
+
+  /**
+   * Is the given mutation record a valid case for inert?
+   * @param {MutationRecord} record
+   * @return {boolean}
+   */
+  static isValidMutationRecord(record) {
+    return record.attributeName === 'inert' || record.attributeName === 'data-inert';
   }
 
   /**
@@ -525,8 +548,9 @@ class InertManager {
       const inertRoot = this._inertRoots.get(root);
       inertRoot.destructor();
       this._inertRoots.delete(root);
-      root.removeAttribute('inert');
-      root.removeAttribute('data-inert');
+      this._inertAttributes.forEach((attr) => {
+        root.removeAttribute(attr);
+      });
     }
   }
 
@@ -621,11 +645,11 @@ class InertManager {
         }, _this);
         break;
       case 'attributes':
-        if (record.attributeName !== 'inert' && record.attributeName !== 'data-inert') {
+        if (InertManager.isValidMutationRecord(record)) {
           return;
         }
         const target = /** @type {!Element} */ (record.target);
-        const inert = target.hasAttribute('inert') || target.hasAttribute('data-inert');
+        const inert = InertManager.hasInertAttribute(target);
         _this.setInert(target, inert);
         break;
       }
