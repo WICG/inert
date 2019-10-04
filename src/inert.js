@@ -180,7 +180,8 @@ class InertRoot {
 
     // If a descendant inert root becomes un-inert, its descendants will still be inert because of
     // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
-    if (element !== this._rootElement && element.hasAttribute('inert')) {
+    if (element !== this._rootElement &&
+        (element.hasAttribute('inert') || element.hasAttribute('data-inert'))) {
       this._adoptInertRoot(element);
     }
 
@@ -259,8 +260,8 @@ class InertRoot {
           // Re-initialise inert node if tabindex changes
           this._manageNode(target);
         } else if (target !== this._rootElement &&
-                   record.attributeName === 'inert' &&
-                   target.hasAttribute('inert')) {
+                  (record.attributeName === 'inert' || record.attributeName === 'data-inert') &&
+                  (target.hasAttribute('inert') || target.hasAttribute('data-inert'))) {
           // If a new inert root is added, adopt its managed nodes and make sure it knows about the
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
@@ -525,6 +526,7 @@ class InertManager {
       inertRoot.destructor();
       this._inertRoots.delete(root);
       root.removeAttribute('inert');
+      root.removeAttribute('data-inert');
     }
   }
 
@@ -619,11 +621,11 @@ class InertManager {
         }, _this);
         break;
       case 'attributes':
-        if (record.attributeName !== 'inert') {
+        if (record.attributeName !== 'inert' && record.attributeName !== 'data-inert') {
           return;
         }
         const target = /** @type {!Element} */ (record.target);
-        const inert = target.hasAttribute('inert');
+        const inert = target.hasAttribute('inert') || target.hasAttribute('data-inert');
         _this.setInert(target, inert);
         break;
       }
