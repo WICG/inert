@@ -3,6 +3,14 @@
  * (http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
  */
 
+// Fix issue in environments where Element is not defined
+Element = typeof Element === 'undefined' ? {
+  prototype: {
+    matches: function() { return false; },
+    hasOwnProperty: function() { return false; },
+  }
+} : Element;
+
 // Convenience function for converting NodeLists.
 /** @type {typeof Array.prototype.slice} */
 const slice = Array.prototype.slice;
