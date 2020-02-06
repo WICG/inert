@@ -588,7 +588,7 @@ class InertManager {
     }, this);
 
     // Comment this out to use programmatic API only.
-    this._observer.observe(this._document.body, {attributes: true, subtree: true, childList: true});
+    this._observer.observe(this._document.body || this._document.documentElement, {attributes: true, subtree: true, childList: true});
   }
 
   /**
