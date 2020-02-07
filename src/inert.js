@@ -182,7 +182,7 @@ class InertRoot {
 
     // If a descendant inert root becomes un-inert, its descendants will still be inert because of
     // this inert root, so all of its managed nodes need to be adopted by this InertRoot.
-    if (element !== this._rootElement && element.hasAttribute('inert')) {
+    if (element !== this._rootElement && InertManager.hasInertAttribute(element)) {
       this._adoptInertRoot(element);
     }
 
@@ -261,8 +261,8 @@ class InertRoot {
           // Re-initialise inert node if tabindex changes
           this._manageNode(target);
         } else if (target !== this._rootElement &&
-                   record.attributeName === 'inert' &&
-                   target.hasAttribute('inert')) {
+                  InertManager.isValidMutationRecord(record) &&
+                  InertManager.hasInertAttribute(target)) {
           // If a new inert root is added, adopt its managed nodes and make sure it knows about the
           // already managed nodes from this inert subroot.
           this._adoptInertRoot(target);
@@ -476,6 +476,18 @@ class InertManager {
      */
     this._observer = new MutationObserver(this._watchForInert.bind(this));
 
+    /**
+     * Selector for elements that should be inerted
+     * @type string
+     * */
+    this._inertSelector = '[inert], [data-inert]';
+
+    /**
+     * Attribute names for inerted elements
+     * @type string[]
+     */
+    this._inertAttributes = ['inert', 'data-inert'];
+
     // Add inert style.
     addInertStyle(document.head || document.body || document.documentElement);
 
@@ -485,6 +497,24 @@ class InertManager {
     } else {
       this._onDocumentLoaded();
     }
+  }
+
+
+  /**
+   * @param {!Element} el
+   * @return {boolean}
+   */
+  static hasInertAttribute(el) {
+    return el.hasAttribute('inert') || el.hasAttribute('data-inert');
+  }
+
+  /**
+   * Is the given mutation record a valid case for inert?
+   * @param {MutationRecord} record
+   * @return {boolean}
+   */
+  static isValidMutationRecord(record) {
+    return record.attributeName === 'inert' || record.attributeName === 'data-inert';
   }
 
   /**
@@ -520,7 +550,9 @@ class InertManager {
       const inertRoot = this._inertRoots.get(root);
       inertRoot.destructor();
       this._inertRoots.delete(root);
-      root.removeAttribute('inert');
+      this._inertAttributes.forEach((attr) => {
+        root.removeAttribute(attr);
+      });
     }
   }
 
@@ -582,7 +614,7 @@ class InertManager {
    */
   _onDocumentLoaded() {
     // Find all inert roots in document and make them actually inert.
-    const inertElements = slice.call(this._document.querySelectorAll('[inert]'));
+    const inertElements = slice.call(this._document.querySelectorAll(this._inertSelector));
     inertElements.forEach(function(inertElement) {
       this.setInert(inertElement, true);
     }, this);
@@ -605,8 +637,8 @@ class InertManager {
           if (node.nodeType !== Node.ELEMENT_NODE) {
             return;
           }
-          const inertElements = slice.call(node.querySelectorAll('[inert]'));
-          if (matches.call(node, '[inert]')) {
+          const inertElements = slice.call(node.querySelectorAll(this._inertSelector));
+          if (matches.call(node, this._inertSelector)) {
             inertElements.unshift(node);
           }
           inertElements.forEach(function(inertElement) {
@@ -615,11 +647,11 @@ class InertManager {
         }, _this);
         break;
       case 'attributes':
-        if (record.attributeName !== 'inert') {
+        if (!InertManager.isValidMutationRecord(record)) {
           return;
         }
         const target = /** @type {!Element} */ (record.target);
-        const inert = target.hasAttribute('inert');
+        const inert = InertManager.hasInertAttribute(target);
         _this.setInert(target, inert);
         break;
       }
@@ -700,12 +732,12 @@ function addInertStyle(node) {
   const style = document.createElement('style');
   style.setAttribute('id', 'inert-style');
   style.textContent = '\n'+
-                      '[inert] {\n' +
+                      '[inert], [data-inert] {\n' +
                       '  pointer-events: none;\n' +
                       '  cursor: default;\n' +
                       '}\n' +
                       '\n' +
-                      '[inert], [inert] * {\n' +
+                      '[inert], [data-inert], [inert] *, [data-inert] * {\n' +
                       '  user-select: none;\n' +
                       '  -webkit-user-select: none;\n' +
                       '  -moz-user-select: none;\n' +
