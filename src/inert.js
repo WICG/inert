@@ -4,12 +4,14 @@
  */
 
 // Fix issue in environments where Element is not defined
-Element = typeof Element === 'undefined' ? {
-  prototype: {
-    matches: function() { return false; },
-    hasOwnProperty: function() { return false; },
+if ( typeof Element === 'undefined' ) {
+  Element = {
+    prototype: {
+      matches: function() { return false; },
+      hasOwnProperty: function() { return false; },
+    }
   }
-} : Element;
+}
 
 // Convenience function for converting NodeLists.
 /** @type {typeof Array.prototype.slice} */
