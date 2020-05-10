@@ -706,10 +706,10 @@ function addInertStyle(node) {
                       '}\n' +
                       '\n' +
                       '[inert], [inert] * {\n' +
-                      '  user-select: none;\n' +
                       '  -webkit-user-select: none;\n' +
                       '  -moz-user-select: none;\n' +
                       '  -ms-user-select: none;\n' +
+                      '  user-select: none;\n' +
                       '}\n';
   node.appendChild(style);
 }
