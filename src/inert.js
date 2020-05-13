@@ -694,7 +694,7 @@ function composedTreeWalk(node, callback, shadowRootAncestor) {
  * @param {!Node} node
  */
 function addInertStyle(node) {
-  if (node.querySelector('style#inert-style')) {
+  if (node.querySelector('style#inert-style, link#inert-style')) {
     return;
   }
   const style = document.createElement('style');

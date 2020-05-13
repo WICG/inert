@@ -82,6 +82,35 @@ following line to the start of your page:
 <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Map,Set,Element.prototype.matches,Node.prototype.contains"></script>
 ```
 
+### Strict Content Security Policy
+
+By default, this polyfill will dynamically insert some CSS, which requires the
+style-src rule of your Content Security Policy to allow 'unsafe-inline'.
+
+It is possible avoid doing so by including those rules from a CSS stylesheet, as
+follows (the `id` property is used by the polyfill to know if it needs to
+dynamically add the missing rules):
+
+```html
+<link rel="stylesheet" type="text/css" href="inert.css" id="inert-style" />
+```
+
+The stylesheet should include the following rules:
+
+```css
+[inert] {
+  pointer-events: none;
+  cursor: default;
+}
+
+[inert], [inert] * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+```
+
 ### Performance and gotchas
 
 The polyfill attempts to provide a reasonable fidelity polyfill for the `inert`
