@@ -3,7 +3,7 @@
   "version": "3.0.3",
   "description": "A polyfill for the proposed inert API",
   "main": "dist/inert.js",
-  "module": "src/inert.js",
+  "module": "dist/inert.esm.js",
   "scripts": {
     "build": "rollup -c",
     "prepublishOnly": "SAUCE=true npm run test",
