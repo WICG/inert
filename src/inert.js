@@ -720,10 +720,10 @@
     node.appendChild(style);
   }
 
-  /** @type {!InertManager} */
-  const inertManager = new InertManager(document);
-
   if (!Element.prototype.hasOwnProperty('inert')) {
+    /** @type {!InertManager} */
+    const inertManager = new InertManager(document);
+    
     Object.defineProperty(Element.prototype, 'inert', {
       enumerable: true,
       /** @this {!Element} */
