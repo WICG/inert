@@ -32,6 +32,7 @@
                                     'iframe',
                                     'object',
                                     'embed',
+                                    'video',
                                     '[contenteditable]'].join(',');
 
   /**
