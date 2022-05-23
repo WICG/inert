@@ -5,7 +5,7 @@
 
 (function() {
   // Return early if we're not running inside of the browser.
-  if (typeof window === 'undefined') {
+  if (typeof window === 'undefined' || typeof Element === 'undefined') {
     return;
   }
 
