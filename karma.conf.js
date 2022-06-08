@@ -16,7 +16,7 @@ module.exports = function(config) {
     ],
     // Change this to 'Chrome' if you would like to debug.
     // Can also add additional local browsers like 'Firefox'.
-    browsers: ['ChromeHeadless'],
+    browsers: ['FirefoxHeadless'],
     // Set this to false to leave the browser open for debugging.
     // You'll probably also need to remove the afterEach block in your tests
     // so the content is not removed from the page you're trying to debug.
@@ -57,82 +57,24 @@ module.exports = function(config) {
   if (process.env.TRAVIS || process.env.SAUCE) {
     // List of browsers to test on SauceLabs.
     // To add more browsers, use:
-    // https://wiki.saucelabs.com/display/DOCS/Platform+Configurator#/
-    // This set of browsers was copied from:
-    // https://github.com/angular/angular.js/blob/master/karma-shared.conf.js#L42-L116
+    // https://docs.saucelabs.com/visual/e2e-testing/supported-browsers/#browser-versions-supported
     const customLaunchers = {
       'SL_Chrome': {
         base: 'SauceLabs',
         browserName: 'chrome',
-        version: 'latest',
-      },
-      'SL_Chrome-1': {
-        base: 'SauceLabs',
-        browserName: 'chrome',
-        version: 'latest-1',
+        version: '100',
       },
       'SL_Firefox': {
         base: 'SauceLabs',
         browserName: 'firefox',
-        version: 'latest',
-      },
-      'SL_Firefox-1': {
-        base: 'SauceLabs',
-        browserName: 'firefox',
-        version: 'latest-1',
-      },
-      'SL_Safari-1': {
-        base: 'SauceLabs',
-        browserName: 'safari',
-        platform: 'OS X 10.12',
-        version: 'latest-1',
+        version: '100',
       },
       'SL_Safari': {
         base: 'SauceLabs',
         browserName: 'safari',
-        platform: 'OS X 10.13',
-        version: 'latest',
+        platform: 'OS X 11.00',
+        version: '14',
       },
-      // 'SL_IE_9': {
-      //   base: 'SauceLabs',
-      //   browserName: 'internet explorer',
-      //   platform: 'Windows 2008',
-      //   version: '9',
-      // },
-      // 'SL_IE_10': {
-      //   base: 'SauceLabs',
-      //   browserName: 'internet explorer',
-      //   platform: 'Windows 2012',
-      //   version: '10',
-      // },
-      'SL_IE_11': {
-        base: 'SauceLabs',
-        browserName: 'internet explorer',
-        platform: 'Windows 8.1',
-        version: '11',
-      },
-      'SL_EDGE': {
-        base: 'SauceLabs',
-        browserName: 'microsoftedge',
-        platform: 'Windows 10',
-        version: 'latest',
-      },
-      'SL_EDGE-1': {
-        base: 'SauceLabs',
-        browserName: 'microsoftedge',
-        platform: 'Windows 10',
-        version: 'latest-1',
-      },
-      // 'SL_iOS_10': {
-      //   base: 'SauceLabs',
-      //   browserName: 'iphone',
-      //   version: '10.3',
-      // },
-      // 'SL_iOS_11': {
-      //   base: 'SauceLabs',
-      //   browserName: 'iphone',
-      //   version: '11',
-      // },
     };
 
     config.set({
