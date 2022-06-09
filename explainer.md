@@ -120,6 +120,7 @@ implementers may get useful functionality into the hands of developers sooner wh
   + rendering content, such as a menu, offscreen, before having it animate on-screen;
   + similarly, for content like a menu which may be repeatedly shown to the user,
   avoiding re-rendering this content each time;
+  + disabling an element as you fade it in or out, without needing to rely on `transitionend` events;
   + a carousel or other type of content cycler (such as a "tweet cycler")
   which visually hides non-current items by placing them at a lower z-index than the active item,
   or by setting their `opacity` to zero,
