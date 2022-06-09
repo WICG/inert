@@ -1,5 +1,6 @@
 language: node_js
 node_js:
+# 10 is good enough
 - '10'
 before_install:
 # package-lock.json was introduced in npm@5
