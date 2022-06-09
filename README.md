@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/WICG/inert.svg?branch=main)](https://travis-ci.org/WICG/inert)
-
 The `inert` attribute/property allows web authors to mark parts of the DOM tree
 as [inert](https://html.spec.whatwg.org/multipage/interaction.html#inert):
 
