@@ -102,7 +102,6 @@ The stylesheet should include the following rules:
 [inert], [inert] * {
   user-select: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
   -ms-user-select: none;
 }
 ```
