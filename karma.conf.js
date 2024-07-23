@@ -24,10 +24,10 @@ module.exports = function(config) {
     // https://mochajs.org/#exclusive-tests
     singleRun: true,
     // Use the mocha test framework with chai assertions.
-    // Use polyfills loaded from Polyfill.io.
+    // Use polyfills loaded from cdnjs.cloudflare.com/polyfill.
     // Use an html fixture loader.
     frameworks: ['mocha', 'chai', 'polyfill', 'fixture'],
-    // List of polyfills to load from Polyfill.io.
+    // List of polyfills to load from cdnjs.cloudflare.com/polyfill.
     polyfill: [
       'Array.from', // Used in tests.
       'Promise',
